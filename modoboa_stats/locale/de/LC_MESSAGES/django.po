@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Arvedui <arvedui@posteo.de>, 2014
+# Patrick Koetter <p@state-of-mind.de>, 2010
+msgid ""
+msgstr ""
+"Project-Id-Version: Modoboa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-11 13:22+0100\n"
+"PO-Revision-Date: 2014-12-03 11:02+0000\n"
+"Last-Translator: Arvedui <arvedui@posteo.de>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/modoboa/language/"
+"de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: app_settings.py:12
+msgid "General"
+msgstr "Grundsätzlich"
+#: app_settings.py:15
+msgid "Path to the log file"
+msgstr "Pfad zur Log-Datei"
+#: app_settings.py:17
+msgid "Path to log file used to collect statistics"
+msgstr "Pfad zur Log-Datei, um Statistiken zu sammeln"
+#: app_settings.py:22
+msgid "Directory to store RRD files"
+msgstr "Ablageverzeichnis für RRD-Dateien"
+#: app_settings.py:24
+msgid "Path to directory where RRD files are stored"
+msgstr "Pfad zum Verzeichnis in dem die RRD-Dateien abgelegt werden"
+#: general_callbacks.py:17
+msgid "Statistics"
+msgstr "Statistiken"
+#: graphics.py:108
+msgid "Average traffic (msgs/min)"
+msgstr "Durchschnittlicher Traffic (nachrichten/min)"
+#: graphics.py:111
+msgid "sent messages"
+msgstr "Gesendete Nachrichten"
+#: graphics.py:112
+msgid "received messages"
+msgstr "Empfangene Nachrichten"
+#: graphics.py:113
+msgid "bounced messages"
+msgstr "Zurückgeworfene Nachrichten"
+#: graphics.py:114
+msgid "rejected messages"
+msgstr "Abgewiesene Nachrichten"
+#: graphics.py:123
+msgid "Average normal traffic size (bytes/min)"
+msgstr "Durchschnittliche Traffic menge (bytes/min)"
+#: graphics.py:126
+msgid "received size"
+msgstr "Empfangsgrösse"
+#: graphics.py:128
+msgid "sent size"
+msgstr "Versendegrösse"
+#: graphics.py:163
+msgid "Mail traffic"
+msgstr "Mailverkehr"
+#: modo_extension.py:21
+msgid "Graphical statistics about emails traffic using RRDtool"
+msgstr "Grafische E-Mail-Statistik (setzt RRDtool ein)"
+#: modo_extension.py:31 templates/modoboa_stats/index.html:4
+msgid "Graphical statistics"
+msgstr "Grafische Statistiken"
+#: templates/modoboa_stats/index.html:42
+msgid "Search a domain"
+msgstr "Domain suchen"
+#: templates/modoboa_stats/index.html:75
+msgid "Apply"
+msgstr "Antworten"
+#: views.py:34
+msgid "No statistics available"
+msgstr "Keine Statistik-Daten verfügbar"
+#: views.py:38
+msgid "Day"
+msgstr "Tag"
+#: views.py:39
+msgid "Week"
+msgstr "Woche"
+#: views.py:40
+msgid "Month"
+msgstr "Monat"
+#: views.py:41
+msgid "Year"
+msgstr "Jahr"
+#: views.py:42
+msgid "Custom"
+msgstr "Benutzerdefiniert"
+#: views.py:91
+msgid "Unknown graphic set"
+msgstr "Unbekanntes graphisches Set"
+#: views.py:102
+msgid "Bad custom period"
+msgstr "Ungültiger individueller Zeitraum"
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy

@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Modoboa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-11 13:22+0100\n"
+"PO-Revision-Date: 2013-12-03 09:35+0000\n"
+"Last-Translator: Antoine Nguyen <tonio@ngyn.org>\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/modoboa/language/"
+"ru/)\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+#: app_settings.py:12
+msgid "General"
+msgstr "Основные"
+#: app_settings.py:15
+msgid "Path to the log file"
+msgstr "Путь к лог файлу"
+#: app_settings.py:17
+msgid "Path to log file used to collect statistics"
+msgstr "Путь к лог файлу для сбора статистики"
+#: app_settings.py:22
+msgid "Directory to store RRD files"
+msgstr "Папка для сохранения RRD файлов"
+#: app_settings.py:24
+msgid "Path to directory where RRD files are stored"
+msgstr "Путь к директории для сохранения RRD файлов"
+#: general_callbacks.py:17
+msgid "Statistics"
+msgstr "Статистика"
+#: graphics.py:108
+#, fuzzy
+msgid "Average traffic (msgs/min)"
+msgstr "Средний размер траффика"
+#: graphics.py:111
+msgid "sent messages"
+msgstr "Отправлено сообщений"
+#: graphics.py:112
+msgid "received messages"
+msgstr "Принято сообщений"
+#: graphics.py:113
+msgid "bounced messages"
+msgstr "Возвращенные сообщения"
+#: graphics.py:114
+msgid "rejected messages"
+msgstr "Отвергнутые сообщения"
+#: graphics.py:123
+#, fuzzy
+msgid "Average normal traffic size (bytes/min)"
+msgstr "Средний размер траффика"
+#: graphics.py:126
+msgid "received size"
+msgstr "Принято"
+#: graphics.py:128
+msgid "sent size"
+msgstr "Отправлено"
+#: graphics.py:163
+msgid "Mail traffic"
+msgstr "Почтовый траффик"
+#: modo_extension.py:21
+msgid "Graphical statistics about emails traffic using RRDtool"
+msgstr "Графическая статистика о почтовом траффика использует RRDtool"
+#: modo_extension.py:31 templates/modoboa_stats/index.html:4
+msgid "Graphical statistics"
+msgstr "Графическая статистика"
+#: templates/modoboa_stats/index.html:42
+msgid "Search a domain"
+msgstr "Искать домен"
+#: templates/modoboa_stats/index.html:75
+msgid "Apply"
+msgstr "Применить"
+#: views.py:34
+msgid "No statistics available"
+msgstr "Статистика не доступна"
+#: views.py:38
+msgid "Day"
+msgstr "День"
+#: views.py:39
+msgid "Week"
+msgstr "Неделя"
+#: views.py:40
+msgid "Month"
+msgstr "Месяц"
+#: views.py:41
+msgid "Year"
+msgstr "Год"
+#: views.py:42
+msgid "Custom"
+msgstr ""
+#: views.py:91
+msgid "Unknown graphic set"
+msgstr "Неизвестный графический набор "
+#: views.py:102
+msgid "Bad custom period"
+msgstr "Не верный выбор периода"
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy

@@ -1,0 +1,106 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Damien Duponchelle <dduponchelle@gmail.com>, 2013
+# lusitan <lusitan@hushmail.com>, 2013
+# Mike C. <miguelmclara@gmail.com>, 2012
+# Mike C. <miguelmclara@gmail.com>, 2013-2014
+# Sandra Ribeiro <sandrarib@gmail.com>, 2012-2013
+# Sandra Ribeiro <sandrarib@gmail.com>, 2012
+msgid ""
+msgstr ""
+"Project-Id-Version: Modoboa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-11 13:22+0100\n"
+"PO-Revision-Date: 2014-12-29 12:51+0000\n"
+"Last-Translator: Mike C. <miguelmclara@gmail.com>\n"
+"Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/"
+"modoboa/language/pt_PT/)\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: app_settings.py:12
+msgid "General"
+msgstr "Geral"
+#: app_settings.py:15
+msgid "Path to the log file"
+msgstr "Caminho para o ficheiro log"
+#: app_settings.py:17
+msgid "Path to log file used to collect statistics"
+msgstr "Caminho para o ficheiro de log usado para recolher as estatísticas"
+#: app_settings.py:22
+msgid "Directory to store RRD files"
+msgstr "Diretório para armazenar os ficheiros RRD"
+#: app_settings.py:24
+msgid "Path to directory where RRD files are stored"
+msgstr "Caminho para o diretório onde os ficheiros RRD são guardados"
+#: general_callbacks.py:17
+msgid "Statistics"
+msgstr "Estatísticas"
+#: graphics.py:108
+msgid "Average traffic (msgs/min)"
+msgstr "Trafego em média (msgs/min)"
+#: graphics.py:111
+msgid "sent messages"
+msgstr "mensagens enviadas"
+#: graphics.py:112
+msgid "received messages"
+msgstr "mensagens recebidas"
+#: graphics.py:113
+msgid "bounced messages"
+msgstr "mensagens devolvidas"
+#: graphics.py:114
+msgid "rejected messages"
+msgstr "mensagens rejeitadas"
+#: graphics.py:123
+msgid "Average normal traffic size (bytes/min)"
+msgstr "Tráfego em média normal por tamanho (bytes/min)"
+#: graphics.py:126
+msgid "received size"
+msgstr "tamanho recebido"
+#: graphics.py:128
+msgid "sent size"
+msgstr "tamanho enviado"
+#: graphics.py:163
+msgid "Mail traffic"
+msgstr "Tráfego de correio"
+#: modo_extension.py:21
+msgid "Graphical statistics about emails traffic using RRDtool"
+msgstr "Estatísticas gráficas sobre tráfego de email usando RRDtool"
+#: modo_extension.py:31 templates/modoboa_stats/index.html:4
+msgid "Graphical statistics"
+msgstr "Estatísticas gráficas"
+#: templates/modoboa_stats/index.html:42
+msgid "Search a domain"
+msgstr "Procurar um domínio"
+#: templates/modoboa_stats/index.html:75
+msgid "Apply"
+msgstr "Aplicar"
+#: views.py:34
+msgid "No statistics available"
+msgstr "Não há estatísticas disponíveis"
+#: views.py:38
+msgid "Day"
+msgstr "Dia"
+#: views.py:39
+msgid "Week"
+msgstr "Semana"
+#: views.py:40
+msgid "Month"
+msgstr "Mês"
+#: views.py:41
+msgid "Year"
+msgstr "Ano"
+#: views.py:42
+msgid "Custom"
+msgstr "Personalizado"
+#: views.py:91
+msgid "Unknown graphic set"
+msgstr "Conjunto de gráficos desconhecido"
+#: views.py:102
+msgid "Bad custom period"
+msgstr "Período personalizado inválido"

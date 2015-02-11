@@ -1,0 +1,143 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Giancarlo Gaifas <lallo@artiemestieri.tn.it>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-11 13:22+0100\n"
+"PO-Revision-Date: 2013-12-23 00:56+0100\n"
+"Last-Translator: Alberto Berti <alberto@metapensiero.it>\n"
+"Language-Team: ITALIANO <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: app_settings.py:12
+msgid "General"
+msgstr "Generale"
+#: app_settings.py:15
+msgid "Path to the log file"
+msgstr "Percorso del file di log"
+#: app_settings.py:17
+msgid "Path to log file used to collect statistics"
+msgstr "Percorso del file di log utilizzato per raccogliere le statistiche"
+#: app_settings.py:22
+msgid "Directory to store RRD files"
+msgstr "Cartella dei file RRD"
+#: app_settings.py:24
+msgid "Path to directory where RRD files are stored"
+msgstr "Percorso della cartella dove sono memorizzati i file RRD"
+#: general_callbacks.py:17
+msgid "Statistics"
+msgstr "Statistiche"
+#: graphics.py:108
+#, fuzzy
+msgid "Average traffic (msgs/min)"
+msgstr "Dimensione del traffico normale medio"
+#: graphics.py:111
+msgid "sent messages"
+msgstr "messaggi inviati"
+#: graphics.py:112
+msgid "received messages"
+msgstr "messaggi ricevuti"
+#: graphics.py:113
+msgid "bounced messages"
+msgstr "messaggi di rimbalzo"
+#: graphics.py:114
+msgid "rejected messages"
+msgstr "messaggi respinti"
+#: graphics.py:123
+#, fuzzy
+msgid "Average normal traffic size (bytes/min)"
+msgstr "Dimensione del traffico normale medio"
+#: graphics.py:126
+msgid "received size"
+msgstr "dimensione di ricezione"
+#: graphics.py:128
+msgid "sent size"
+msgstr "dimensione di spedizione"
+#: graphics.py:163
+msgid "Mail traffic"
+msgstr "Traffico mail"
+#: modo_extension.py:21
+msgid "Graphical statistics about emails traffic using RRDtool"
+msgstr "Grafico delle statistiche sul traffico e-mail utilizzando RRDtool"
+#: modo_extension.py:31 templates/modoboa_stats/index.html:4
+msgid "Graphical statistics"
+msgstr "Grafico statistiche"
+#: templates/modoboa_stats/index.html:42
+msgid "Search a domain"
+msgstr "Ricerca un dominio"
+#: templates/modoboa_stats/index.html:75
+msgid "Apply"
+msgstr "Applica"
+#: views.py:34
+msgid "No statistics available"
+msgstr "Non sono disponibili statistiche"
+#: views.py:38
+msgid "Day"
+msgstr "Giorno"
+#: views.py:39
+msgid "Week"
+msgstr "Settimana"
+#: views.py:40
+msgid "Month"
+msgstr "Mese"
+#: views.py:41
+msgid "Year"
+msgstr "Anno"
+#: views.py:42
+msgid "Custom"
+msgstr ""
+#: views.py:91
+msgid "Unknown graphic set"
+msgstr "Impostazione grafica sconosciuta"
+#: views.py:102
+msgid "Bad custom period"
+msgstr "Periodo personalizzato sbagliato"
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
+#, fuzzy
