@@ -83,6 +83,11 @@ class LogParser(object):
         self.date_expr = None
         self.line_expr = \
             re.compile(r"\s+([-\w]+)\s+(\w+)/?\w*[[](\d+)[]]:\s+(.*)")
+        self._amavis_expr = (
+            re.compile(
+                r"(INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@([^>]+)>.*"
+            )
+        )
         self._id_expr = re.compile(r"(\w+): (.*)")
         self._prev_se = -1
         self._prev_mi = -1
@@ -300,6 +305,14 @@ class LogParser(object):
         if not m:
             return
         host, prog, pid, log = m.groups()
+        m = self._amavis_expr.search(log)
+        if m is not None:
+            if m.group(2) in self.domains:
+                if m.group(1) == "INFECTED":
+                    self.inc_counter(m.group(2), 'virus')
+                elif m.group(1) in ["SPAM", "SPAMMY"]:
+                    self.inc_counter(m.group(2), 'spam')
+                return
         m = self._id_expr.match(log)
         if m is None:
             self._dprint("Unknown line format: %s" % log)
