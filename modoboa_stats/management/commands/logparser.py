@@ -391,6 +391,8 @@ class Command(BaseCommand, CloseConnectionMixin):
     def handle(self, *args, **options):
         Stats().load()
         if options["logfile"] is None:
-            options["logfile"] = parameters.get_admin("LOGFILE", app="stats")
-        p = LogParser(options, parameters.get_admin("RRD_ROOTDIR", app="stats"))
+            options["logfile"] = parameters.get_admin(
+                "LOGFILE", app="modoboa_stats")
+        p = LogParser(options, parameters.get_admin(
+            "RRD_ROOTDIR", app="modoboa_stats"))
         p.process()
