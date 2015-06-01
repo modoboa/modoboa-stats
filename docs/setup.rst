@@ -31,7 +31,7 @@ feed the RRD files. Add the following line into root's crontab::
   */5 * * * * <modoboa_site>/manage.py logparser &> /dev/null
   #
   # Or like this if you use a virtual environment:
-  # 0/5 * * * * <virtualenv path/bin/python> <modoboa_site>/manage.py logparser &> /dev/null
+  # */5 * * * * <virtualenv path/bin/python> <modoboa_site>/manage.py logparser &> /dev/null
 
 Replace ``<modoboa_site>`` with the path of your Modoboa instance.
 
