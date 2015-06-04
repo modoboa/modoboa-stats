@@ -28,7 +28,6 @@ import rrdtool
 
 from django.core.management.base import BaseCommand
 
-from modoboa.core.extensions import exts_pool
 from modoboa.core.management.commands import CloseConnectionMixin
 from modoboa.lib import parameters
 
@@ -95,23 +94,10 @@ class LogParser(object):
         self.cur_t = 0
 
     def _load_domain_list(self):
-        """Load the list of allowed domains.
-
-        Since the relay domains feature is an extension of the admin
-        panel, we don't use an event to get the list of all supported
-        domains...
-
-        """
+        """Load the list of allowed domains."""
         for dom in Domain.objects.all():
             self.domains += [str(dom.name)]
             self.data[str(dom.name)] = {}
-        if not exts_pool.is_extension_installed(
-                "modoboa.extensions.postfix_relay_domains"):
-            return
-        from modoboa.extensions.postfix_relay_domains.models import RelayDomain
-        for rdom in RelayDomain.objects.all():
-            self.domains += [str(rdom.name)]
-            self.data[str(rdom.name)] = {}
 
     def _dprint(self, msg):
         """Print a debug message if required.

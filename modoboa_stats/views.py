@@ -4,13 +4,13 @@
 
 import re
 import time
+
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import (
     login_required, user_passes_test, permission_required
 )
 
-from modoboa.core.extensions import exts_pool
 from modoboa.lib import events
 from modoboa.lib.exceptions import BadRequest, PermDeniedException, NotFound
 from modoboa.lib.web_utils import (
@@ -50,36 +50,27 @@ def index(request):
 
 
 def check_domain_access(user, pattern):
-    """Check if an administrator can access a domain/relay domain.
+    """Check if an administrator can access a domain.
 
     If a non super administrator asks for the global view, we give him
     a view on the first domain he manage instead.
 
     :return: a domain name (str) or None.
     """
-    targets = [Domain]
-    if exts_pool.is_extension_installed(
-            "modoboa_postfix_relaydomains"):
-        from modoboa_postfix_relaydomains.models import RelayDomain
-        targets.append(RelayDomain)
-
     if pattern in [None, "global"]:
         if not user.is_superuser:
-            for target in targets:
-                if not target.objects.get_for_admin(user).count():
-                    continue
-                return target.objects.get_for_admin(user)[0].name
-            return None
+            domains = Domain.objects.get_for_admin(user)
+            if not domains.exists():
+                return None
+            return domains.first()
         return "global"
 
-    for target in targets:
-        results = target.objects.filter(name__startswith=pattern)
-        if results.count() != 1:
-            continue
-        if not user.can_access(results[0]):
-            raise PermDeniedException
-        return results[0].name
-    return None
+    results = Domain.objects.filter(name__startswith=pattern)
+    if results.count() != 1:
+        return None
+    if not user.can_access(results.first()):
+        raise PermDeniedException
+    return results.first().name
 
 
 @login_required
@@ -122,13 +113,6 @@ def graphs(request):
 @login_required
 @user_passes_test(lambda u: u.group != "SimpleUsers")
 def get_domain_list(request):
-    """Get the list of domains (and relay domains) the user can see."""
+    """Get the list of domains the user can see."""
     doms = [dom.name for dom in Domain.objects.get_for_admin(request.user)]
-    if exts_pool.is_extension_installed(
-            "modoboa_postfix_relaydomains"):
-        from modoboa_postfix_relaydomains.models import RelayDomain
-        doms += [
-            rdom.name for rdom in
-            RelayDomain.objects.get_for_admin(request.user)
-        ]
     return render_to_json_response(doms)
