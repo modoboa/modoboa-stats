@@ -62,7 +62,7 @@ def check_domain_access(user, pattern):
             domains = Domain.objects.get_for_admin(user)
             if not domains.exists():
                 return None
-            return domains.first()
+            return domains.first().name
         return "global"
 
     results = Domain.objects.filter(name__startswith=pattern)
@@ -102,7 +102,7 @@ def graphs(request):
         start = "-1%s" % period
         period_name = period
 
-    tplvars['graphs'] = gsets[gset].export(tplvars["domain"], start, end)
+    tplvars["graphs"] = gsets[gset].export(tplvars["domain"], start, end)
     tplvars["period_name"] = period_name
     tplvars["start"] = start
     tplvars["end"] = end
