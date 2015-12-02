@@ -1,2 +1,2 @@
-modoboa-admin>=1.1.0
+modoboa>=1.4.0
 lxml
