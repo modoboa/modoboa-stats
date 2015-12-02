@@ -28,10 +28,9 @@ import rrdtool
 
 from django.core.management.base import BaseCommand
 
+from modoboa.admin.models import Domain
 from modoboa.core.management.commands import CloseConnectionMixin
 from modoboa.lib import parameters
-
-from modoboa_admin.models import Domain
 
 from ...lib import date_to_timestamp
 from ...modo_extension import Stats

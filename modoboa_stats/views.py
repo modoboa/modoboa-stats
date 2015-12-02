@@ -11,19 +11,18 @@ from django.contrib.auth.decorators import (
     login_required, user_passes_test, permission_required
 )
 
+from modoboa.admin.models import Domain
 from modoboa.lib import events
 from modoboa.lib.exceptions import BadRequest, PermDeniedException, NotFound
 from modoboa.lib.web_utils import (
     render_to_json_response
 )
 
-from modoboa_admin.models import Domain
-
 from .lib import date_to_timestamp
 
 
 @login_required
-@permission_required("modoboa_admin.view_mailboxes")
+@permission_required("admin.view_mailboxes")
 def index(request):
     """
     FIXME: how to select a default graph set ?
