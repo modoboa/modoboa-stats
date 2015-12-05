@@ -29,7 +29,6 @@ import rrdtool
 from django.core.management.base import BaseCommand
 
 from modoboa.admin.models import Domain
-from modoboa.core.management.commands import CloseConnectionMixin
 from modoboa.lib import parameters
 
 from ...lib import date_to_timestamp
@@ -361,7 +360,7 @@ class LogParser(object):
                 self.update_rrd(dom, t)
 
 
-class Command(BaseCommand, CloseConnectionMixin):
+class Command(BaseCommand):
     help = 'Log file parser'
 
     option_list = BaseCommand.option_list + (
