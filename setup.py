@@ -57,7 +57,7 @@ def read(fname):
 
 setup(
     name="modoboa-stats",
-    version='1.0.3',
+    version='1.0.4',
     url='http://modoboa.org/',
     license='MIT',
     description="Graphical statistics for Modoboa",
