@@ -79,7 +79,7 @@ class LogParser(object):
                 r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)T(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)\.\d+\+\d+:\d+(?P<eol>.*)")
         self.date_expr = None
         self.line_expr = \
-            re.compile(r"\s+([-\w]+)\s+(\w+)/?\w*[[](\d+)[]]:\s+(.*)")
+            re.compile(r"\s+([-\w\.]+)\s+(\w+)/?\w*[[](\d+)[]]:\s+(.*)")
         self._amavis_expr = (
             re.compile(
                 r"(INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@([^>]+)>.*"
