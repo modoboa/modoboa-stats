@@ -12,11 +12,13 @@ from django.utils.translation import ugettext_lazy
 from modoboa.core.extensions import ModoExtension, exts_pool
 from modoboa.lib import events, parameters
 
+from . import __version__
+
 
 class Stats(ModoExtension):
     name = "modoboa_stats"
     label = "Statistics"
-    version = "1.0.4"
+    version = __version__
     description = ugettext_lazy(
         "Graphical statistics about emails traffic using RRDtool"
     )

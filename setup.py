@@ -4,6 +4,8 @@ import re
 import os
 from setuptools import setup, find_packages
 
+from modoboa_stats import __version__
+
 ROOT = os.path.dirname(__file__)
 
 
@@ -57,7 +59,7 @@ def read(fname):
 
 setup(
     name="modoboa-stats",
-    version='1.0.4',
+    version=__version__,
     url='http://modoboa.org/',
     license='MIT',
     description="Graphical statistics for Modoboa",
