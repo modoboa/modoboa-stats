@@ -1,10 +1,14 @@
+"""Classes to define graphics."""
+
 import inspect
 import os
 
 from lxml import etree
 
-from django.utils.translation import ugettext_lazy
+from django.conf import settings
+from django.utils.translation import ugettext as _, ugettext_lazy
 
+from modoboa.lib import exceptions
 from modoboa.lib import parameters
 from modoboa.lib.sysutils import exec_cmd
 
@@ -42,14 +46,10 @@ class Curve(object):
 
 
 class Graphic(object):
-
-    """Graphic.
-
-    """
+    """Graphic."""
 
     def __init__(self):
-        """Constructor.
-        """
+        """Constructor."""
         self._curves = []
         try:
             order = getattr(self, "order")
@@ -71,9 +71,28 @@ class Graphic(object):
     def display_name(self):
         return self.__class__.__name__.lower()
 
+    @property
+    def rrdtool_binary(self):
+        """Return path to rrdtool binary."""
+        dpath = None
+        code, output = exec_cmd("which dovecot")
+        if not code:
+            dpath = output.strip()
+        else:
+            known_paths = getattr(
+                settings, "RRDTOOL_LOOKUP_PATH",
+                ("/usr/bin/rrdtool", "/usr/local/bin/rrdtool")
+            )
+            for fpath in known_paths:
+                if os.path.isfile(fpath) and os.access(fpath, os.X_OK):
+                    dpath = fpath
+        if dpath is None:
+            raise exceptions.InternalError(
+                _("Failed to locate rrdtool binary."))
+        return dpath
+
     def export(self, rrdfile, start, end):
-        """
-        """
+        """Export data to XML using rrdtool and convert it to JSON."""
         result = []
         cmdargs = []
         for curve in self._curves:
@@ -81,7 +100,8 @@ class Graphic(object):
                 "name": curve.legend, "color": curve.color, "data": []
             }]
             cmdargs += curve.to_rrd_command_args(rrdfile)
-        cmd = "rrdtool xport --start %s --end %s " % (str(start), str(end))
+        cmd = "{} xport --start {} --end {} ".format(
+            self.rrdtool_binary, str(start), str(end))
         cmd += " ".join(cmdargs)
         if isinstance(cmd, unicode):
             cmd = cmd.encode("utf-8")
@@ -102,9 +122,8 @@ class Graphic(object):
 
 
 class AverageTraffic(Graphic):
+    """Average traffic."""
 
-    """Average traffic.
-    """
     title = ugettext_lazy('Average traffic (msgs/min)')
 
     # Curve definitions
@@ -119,9 +138,8 @@ class AverageTraffic(Graphic):
 
 
 class AverageTrafficSize(Graphic):
+    """Average traffic size."""
 
-    """Average traffic size.
-    """
     title = ugettext_lazy('Average normal traffic size (bytes/min)')
 
     # Curve definitions

@@ -2,7 +2,13 @@
 Setup
 #####
 
-First, make sure ``rrdtool`` is installed on your server.
+First, make sure ``rrdtool`` is installed on your server. By default,
+Modoboa will try the following locations to find the binary::
+
+  RRDTOOL_LOOKUP_PATH = ("/usr/bin/rrdtool", "/usr/local/bin/rrdtool", )
+
+You can override this setting (:file:`settings.py`) if it does not
+match your installation.
 
 To use the extension, go to the online parameters panel and adapt the
 following ones to your environment:
