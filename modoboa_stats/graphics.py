@@ -75,7 +75,7 @@ class Graphic(object):
     def rrdtool_binary(self):
         """Return path to rrdtool binary."""
         dpath = None
-        code, output = exec_cmd("which dovecot")
+        code, output = exec_cmd("which rrdtool")
         if not code:
             dpath = output.strip()
         else:
