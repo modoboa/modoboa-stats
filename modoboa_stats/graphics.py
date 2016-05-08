@@ -100,12 +100,16 @@ class Graphic(object):
                 "name": curve.legend, "color": curve.color, "data": []
             }]
             cmdargs += curve.to_rrd_command_args(rrdfile)
-        cmd = "{} xport --start {} --end {} ".format(
-            self.rrdtool_binary, str(start), str(end))
-        cmd += " ".join(cmdargs)
-        if isinstance(cmd, unicode):
-            cmd = cmd.encode("utf-8")
-        code, output = exec_cmd(cmd)
+        code = 0
+        for extra_args in [" --showtime", ""]:
+            cmd = "{} xport --start {} --end {}{} ".format(
+                self.rrdtool_binary, str(start), str(end), extra_args)
+            cmd += " ".join(cmdargs)
+            if isinstance(cmd, unicode):
+                cmd = cmd.encode("utf-8")
+            code, output = exec_cmd(cmd)
+            if code:
+                continue
         if code:
             return []
         tree = etree.fromstring(output)
