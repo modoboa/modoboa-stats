@@ -13,11 +13,11 @@ running the following command::
 
   $ pip install modoboa-stats
 
-Since this extension relies on the ``python-rrdtool`` package, you may
+Since this extension relies on the ``rrdtool`` package, you may
 need to install additional libraries in order to compile it. On a
-Debian system, you will need the following::
+Debian system, you will require the following packages::
 
-  $ apt-get install librrd-dev libglib2.0-dev libcairo2-dev libpango1.0-dev
+  $ apt-get install librrd-dev
 
 Edit the settings.py file of your modoboa instance and add
 ``modoboa_stats`` inside the ``MODOBOA_APPS`` variable like this::
