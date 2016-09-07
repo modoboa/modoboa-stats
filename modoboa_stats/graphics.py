@@ -101,20 +101,20 @@ class Graphic(object):
             }]
             cmdargs += curve.to_rrd_command_args(rrdfile)
         code = 0
-        for extra_args in [" --showtime", ""]:
-            cmd = "{} xport --start {} --end {}{} ".format(
-                self.rrdtool_binary, str(start), str(end), extra_args)
-            cmd += " ".join(cmdargs)
-            if isinstance(cmd, unicode):
-                cmd = cmd.encode("utf-8")
-            code, output = exec_cmd(cmd)
-            if code:
-                continue
+
+        cmd = "{} xport --start {} --end {} ".format(
+            self.rrdtool_binary, str(start), str(end))
+        cmd += " ".join(cmdargs)
+        if isinstance(cmd, unicode):
+            cmd = cmd.encode("utf-8")
+        code, output = exec_cmd(cmd)
         if code:
             return []
+
         tree = etree.fromstring(output)
+        timestamp = int(tree.xpath('/xport/meta/start')[0].text)
+        step = int(tree.xpath('/xport/meta/step')[0].text)
         for row in tree.xpath('/xport/data/row'):
-            timestamp = int(row.find('t').text)
             for vindex, value in enumerate(row.findall('v')):
                 if value.text == 'NaN':
                     result[vindex]['data'].append({'x': timestamp, 'y': 0})
@@ -122,6 +122,7 @@ class Graphic(object):
                     result[vindex]['data'].append(
                         {'x': timestamp, 'y': float(value.text)}
                     )
+            timestamp += step
         return result
 
 
