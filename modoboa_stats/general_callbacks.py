@@ -10,7 +10,7 @@ from .graphics import MailTraffic
 
 @events.observe("UserMenuDisplay")
 def menu(target, user):
-    if target != "top_menu" or user.group == "SimpleUsers":
+    if target != "top_menu" or user.role == "SimpleUsers":
         return []
     return [
         {"name": "stats",

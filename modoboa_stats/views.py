@@ -73,7 +73,7 @@ def check_domain_access(user, pattern):
 
 
 @login_required
-@user_passes_test(lambda u: u.group != "SimpleUsers")
+@user_passes_test(lambda u: u.role != "SimpleUsers")
 def graphs(request):
     gset = request.GET.get("gset", None)
     gsets = events.raiseDictEvent("GetGraphSets")
@@ -110,7 +110,7 @@ def graphs(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.group != "SimpleUsers")
+@user_passes_test(lambda u: u.role != "SimpleUsers")
 def get_domain_list(request):
     """Get the list of domains the user can see."""
     doms = [dom.name for dom in Domain.objects.get_for_admin(request.user)]
