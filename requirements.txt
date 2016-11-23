@@ -1,3 +1,3 @@
 modoboa>=1.6.1
 lxml
-rrdtool
+rrdtool>=0.1.11
