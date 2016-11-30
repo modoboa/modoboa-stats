@@ -29,7 +29,7 @@ import rrdtool
 from django.core.management.base import BaseCommand
 
 from modoboa.admin.models import Domain
-from modoboa.lib import parameters
+from modoboa.parameters import tools as param_tools
 
 from ...lib import date_to_timestamp
 from ...modo_extension import Stats
@@ -375,8 +375,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         Stats().load()
         if options["logfile"] is None:
-            options["logfile"] = parameters.get_admin(
-                "LOGFILE", app="modoboa_stats")
-        p = LogParser(options, parameters.get_admin(
-            "RRD_ROOTDIR", app="modoboa_stats"))
+            options["logfile"] = param_tools.get_global_parameter(
+                "logfile", app="modoboa_stats")
+        p = LogParser(options, param_tools.get_global_parameter(
+            "rrd_rootdir", app="modoboa_stats"))
         p.process()
