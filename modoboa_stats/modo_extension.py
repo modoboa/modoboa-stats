@@ -7,6 +7,7 @@ This module provides support to retrieve statistics from postfix log :
 sent, received, bounced, rejected
 
 """
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy
 
 from modoboa.core.extensions import ModoExtension, exts_pool
@@ -25,6 +26,7 @@ class Stats(ModoExtension):
     )
     needs_media = True
     url = "stats"
+    topredirection_url = reverse_lazy("modoboa_stats:index")
 
     def load(self):
         param_tools.registry.add(
