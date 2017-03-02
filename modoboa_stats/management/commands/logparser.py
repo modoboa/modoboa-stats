@@ -17,7 +17,7 @@ Predefined events are:
  * Global consolidation of all previous events.
 
 """
-from optparse import make_option
+
 import os
 import re
 import string
@@ -29,7 +29,7 @@ import rrdtool
 from django.core.management.base import BaseCommand
 
 from modoboa.admin.models import Domain
-from modoboa.lib import parameters
+from modoboa.parameters import tools as param_tools
 
 from ...lib import date_to_timestamp
 from ...modo_extension import Stats
@@ -363,20 +363,23 @@ class LogParser(object):
 class Command(BaseCommand):
     help = 'Log file parser'
 
-    option_list = BaseCommand.option_list + (
-        make_option("--logfile", default=None,
-                    help="postfix log in syslog format", metavar="FILE"),
-        make_option("--verbose", default=False, action="store_true",
-                    dest="verbose", help="Set verbose mode"),
-        make_option("--debug", default=False, action="store_true",
-                    help="Set debug mode")
-    )
+    def add_arguments(self, parser):
+        """Add extra arguments to command line."""
+        parser.add_argument(
+            "--logfile", default=None,
+            help="postfix log in syslog format", metavar="FILE")
+        parser.add_argument(
+            "--verbose", default=False, action="store_true",
+            dest="verbose", help="Set verbose mode")
+        parser.add_argument(
+            "--debug", default=False, action="store_true",
+            help="Set debug mode")
 
     def handle(self, *args, **options):
         Stats().load()
         if options["logfile"] is None:
-            options["logfile"] = parameters.get_admin(
-                "LOGFILE", app="modoboa_stats")
-        p = LogParser(options, parameters.get_admin(
-            "RRD_ROOTDIR", app="modoboa_stats"))
+            options["logfile"] = param_tools.get_global_parameter(
+                "logfile", app="modoboa_stats")
+        p = LogParser(options, param_tools.get_global_parameter(
+            "rrd_rootdir", app="modoboa_stats"))
         p.process()

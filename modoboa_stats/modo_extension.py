@@ -1,18 +1,20 @@
 # coding: utf-8
 
 """
-Graphical statistics about emails traffic using RRDtool
+Graphical statistics about emails traffic using RRDtool.
 
 This module provides support to retrieve statistics from postfix log :
 sent, received, bounced, rejected
 
 """
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy
 
 from modoboa.core.extensions import ModoExtension, exts_pool
-from modoboa.lib import events, parameters
+from modoboa.parameters import tools as param_tools
 
 from . import __version__
+from . import forms
 
 
 class Stats(ModoExtension):
@@ -24,14 +26,11 @@ class Stats(ModoExtension):
     )
     needs_media = True
     url = "stats"
+    topredirection_url = reverse_lazy("modoboa_stats:index")
 
     def load(self):
-        from .app_settings import ParametersForm
-
-        events.declare(["GetGraphSets"])
-        parameters.register(
-            ParametersForm, ugettext_lazy("Graphical statistics")
-        )
-        from . import general_callbacks
+        param_tools.registry.add(
+            "global", forms.ParametersForm,
+            ugettext_lazy("Graphical statistics"))
 
 exts_pool.register_extension(Stats)

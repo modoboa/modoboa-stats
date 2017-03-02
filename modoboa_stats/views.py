@@ -12,12 +12,12 @@ from django.contrib.auth.decorators import (
 )
 
 from modoboa.admin.models import Domain
-from modoboa.lib import events
 from modoboa.lib.exceptions import BadRequest, PermDeniedException, NotFound
 from modoboa.lib.web_utils import (
     render_to_json_response
 )
 
+from . import signals
 from .lib import date_to_timestamp
 
 
@@ -32,7 +32,9 @@ def index(request):
         if not Domain.objects.get_for_admin(request.user).count():
             raise NotFound(_("No statistics available"))
 
-    graph_sets = events.raiseDictEvent('GetGraphSets')
+    graph_sets = {}
+    for result in signals.get_graph_sets.send(sender="index"):
+        graph_sets.update(result[1])
     periods = [
         {"name": "day", "label": _("Day")},
         {"name": "week", "label": _("Week")},
@@ -76,8 +78,10 @@ def check_domain_access(user, pattern):
 @user_passes_test(lambda u: u.role != "SimpleUsers")
 def graphs(request):
     gset = request.GET.get("gset", None)
-    gsets = events.raiseDictEvent("GetGraphSets")
-    if gset not in gsets:
+    graph_sets = {}
+    for result in signals.get_graph_sets.send(sender="index"):
+        graph_sets.update(result[1])
+    if gset not in graph_sets:
         raise NotFound(_("Unknown graphic set"))
     searchq = request.GET.get("searchquery", None)
     period = request.GET.get("period", "day")
@@ -101,7 +105,7 @@ def graphs(request):
         start = "-1%s" % period
         period_name = period
 
-    tplvars["graphs"] = gsets[gset].export(tplvars["domain"], start, end)
+    tplvars["graphs"] = graph_sets[gset].export(tplvars["domain"], start, end)
     tplvars["period_name"] = period_name
     tplvars["start"] = start
     tplvars["end"] = end

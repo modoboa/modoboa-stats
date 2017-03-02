@@ -9,8 +9,8 @@ from django.conf import settings
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from modoboa.lib import exceptions
-from modoboa.lib import parameters
 from modoboa.lib.sysutils import exec_cmd
+from modoboa.parameters import tools as param_tools
 
 
 class Curve(object):
@@ -35,7 +35,7 @@ class Curve(object):
         :return: a list
         """
         rrdfile = os.path.join(
-            parameters.get_admin("RRD_ROOTDIR"), "%s.rrd" % rrdfile
+            param_tools.get_global_parameter("rrd_rootdir"), "%s.rrd" % rrdfile
         )
         return [
             'DEF:%s=%s:%s:%s' %

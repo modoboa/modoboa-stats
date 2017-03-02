@@ -1,10 +1,11 @@
-from django.conf.urls import patterns, url
+"""Stats urls."""
 
+from django.conf.urls import url
 
-urlpatterns = patterns(
-    'modoboa_stats.views',
+from . import views
 
-    url(r'^$', 'index', name='fullindex'),
-    url(r'^graphs/$', "graphs", name="graph_list"),
-    url(r'^domains/$', "get_domain_list", name="domain_list"),
-)
+urlpatterns = [
+    url(r"^$", views.index, name="fullindex"),
+    url(r"^graphs/$", views.graphs, name="graph_list"),
+    url(r"^domains/$", views.get_domain_list, name="domain_list"),
+]
