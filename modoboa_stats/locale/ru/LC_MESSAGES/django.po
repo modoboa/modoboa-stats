@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Modoboa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-11 13:22+0100\n"
+"POT-Creation-Date: 2017-03-03 09:37+0100\n"
 "PO-Revision-Date: 2013-12-03 09:35+0000\n"
 "Last-Translator: Antoine Nguyen <tonio@ngyn.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/modoboa/language/"
@@ -18,127 +18,129 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-#: app_settings.py:12
+
+#: forms.py:15
 msgid "General"
 msgstr "Основные"
-#: app_settings.py:15
+
+#: forms.py:18
 msgid "Path to the log file"
 msgstr "Путь к лог файлу"
-#: app_settings.py:17
+
+#: forms.py:20
 msgid "Path to log file used to collect statistics"
 msgstr "Путь к лог файлу для сбора статистики"
-#: app_settings.py:22
+
+#: forms.py:25
 msgid "Directory to store RRD files"
 msgstr "Папка для сохранения RRD файлов"
-#: app_settings.py:24
+
+#: forms.py:28
 msgid "Path to directory where RRD files are stored"
 msgstr "Путь к директории для сохранения RRD файлов"
-#: general_callbacks.py:17
-msgid "Statistics"
-msgstr "Статистика"
-#: graphics.py:108
+
+#: graphics.py:91
+msgid "Failed to locate rrdtool binary."
+msgstr ""
+
+#: graphics.py:132
 #, fuzzy
 msgid "Average traffic (msgs/min)"
 msgstr "Средний размер траффика"
-#: graphics.py:111
+
+#: graphics.py:135
 msgid "sent messages"
 msgstr "Отправлено сообщений"
-#: graphics.py:112
+
+#: graphics.py:136
 msgid "received messages"
 msgstr "Принято сообщений"
-#: graphics.py:113
+
+#: graphics.py:137
 msgid "bounced messages"
 msgstr "Возвращенные сообщения"
-#: graphics.py:114
+
+#: graphics.py:138
 msgid "rejected messages"
 msgstr "Отвергнутые сообщения"
-#: graphics.py:123
+
+#: graphics.py:139
+#, fuzzy
+#| msgid "sent messages"
+msgid "virus messages"
+msgstr "Отправлено сообщений"
+
+#: graphics.py:140
+#, fuzzy
+#| msgid "sent messages"
+msgid "spam messages"
+msgstr "Отправлено сообщений"
+
+#: graphics.py:148
 #, fuzzy
 msgid "Average normal traffic size (bytes/min)"
 msgstr "Средний размер траффика"
-#: graphics.py:126
+
+#: graphics.py:151
 msgid "received size"
 msgstr "Принято"
-#: graphics.py:128
+
+#: graphics.py:153
 msgid "sent size"
 msgstr "Отправлено"
-#: graphics.py:163
+
+#: graphics.py:188
 msgid "Mail traffic"
 msgstr "Почтовый траффик"
-#: modo_extension.py:21
+
+#: handlers.py:20
+msgid "Statistics"
+msgstr "Статистика"
+
+#: modo_extension.py:25
 msgid "Graphical statistics about emails traffic using RRDtool"
 msgstr "Графическая статистика о почтовом траффика использует RRDtool"
-#: modo_extension.py:31 templates/modoboa_stats/index.html:4
+
+#: modo_extension.py:34 templates/modoboa_stats/index.html:4
 msgid "Graphical statistics"
 msgstr "Графическая статистика"
+
 #: templates/modoboa_stats/index.html:42
 msgid "Search a domain"
 msgstr "Искать домен"
+
 #: templates/modoboa_stats/index.html:75
 msgid "Apply"
 msgstr "Применить"
-#: views.py:34
+
+#: views.py:33
 msgid "No statistics available"
 msgstr "Статистика не доступна"
-#: views.py:38
+
+#: views.py:39
 msgid "Day"
 msgstr "День"
-#: views.py:39
+
+#: views.py:40
 msgid "Week"
 msgstr "Неделя"
-#: views.py:40
+
+#: views.py:41
 msgid "Month"
 msgstr "Месяц"
-#: views.py:41
+
+#: views.py:42
 msgid "Year"
 msgstr "Год"
-#: views.py:42
+
+#: views.py:43
 msgid "Custom"
 msgstr ""
-#: views.py:91
+
+#: views.py:85
 msgid "Unknown graphic set"
 msgstr "Неизвестный графический набор "
-#: views.py:102
+
+#: views.py:96
 msgid "Bad custom period"
 msgstr "Не верный выбор периода"
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy
-#, fuzzy

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Modoboa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-11 13:22+0100\n"
+"POT-Creation-Date: 2017-03-03 09:37+0100\n"
 "PO-Revision-Date: 2015-01-13 15:18+0000\n"
 "Last-Translator: Olle Gustafsson <olle@dalnix.se>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/modoboa/language/"
@@ -20,84 +20,127 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: app_settings.py:12
+
+#: forms.py:15
 msgid "General"
 msgstr "Generellt"
-#: app_settings.py:15
+
+#: forms.py:18
 msgid "Path to the log file"
 msgstr "Sökväg till loggfil"
-#: app_settings.py:17
+
+#: forms.py:20
 msgid "Path to log file used to collect statistics"
 msgstr "Sökväg till loggfil som används för att samla in statistik"
-#: app_settings.py:22
+
+#: forms.py:25
 msgid "Directory to store RRD files"
 msgstr "Katalog för lagring av RRD filer"
-#: app_settings.py:24
+
+#: forms.py:28
 msgid "Path to directory where RRD files are stored"
 msgstr "Sökväg till katalog där RRD filer lagras"
-#: general_callbacks.py:17
-msgid "Statistics"
-msgstr "Statistik"
-#: graphics.py:108
+
+#: graphics.py:91
+msgid "Failed to locate rrdtool binary."
+msgstr ""
+
+#: graphics.py:132
 msgid "Average traffic (msgs/min)"
 msgstr "Genomsnittlig trafik (meddelanden/min)"
-#: graphics.py:111
+
+#: graphics.py:135
 msgid "sent messages"
 msgstr "skickade meddelanden"
-#: graphics.py:112
+
+#: graphics.py:136
 msgid "received messages"
 msgstr "mottagna meddelande"
-#: graphics.py:113
+
+#: graphics.py:137
 msgid "bounced messages"
 msgstr "studsade meddelanden"
-#: graphics.py:114
+
+#: graphics.py:138
 msgid "rejected messages"
 msgstr "avvisade meddelanden"
-#: graphics.py:123
+
+#: graphics.py:139
+#, fuzzy
+#| msgid "sent messages"
+msgid "virus messages"
+msgstr "skickade meddelanden"
+
+#: graphics.py:140
+#, fuzzy
+#| msgid "sent messages"
+msgid "spam messages"
+msgstr "skickade meddelanden"
+
+#: graphics.py:148
 msgid "Average normal traffic size (bytes/min)"
 msgstr "Genomsnittlig normal trafik (bytes/min)"
-#: graphics.py:126
+
+#: graphics.py:151
 msgid "received size"
 msgstr "mottagen storlek"
-#: graphics.py:128
+
+#: graphics.py:153
 msgid "sent size"
 msgstr "sänd storlek"
-#: graphics.py:163
+
+#: graphics.py:188
 msgid "Mail traffic"
 msgstr "Mail trafik"
-#: modo_extension.py:21
+
+#: handlers.py:20
+msgid "Statistics"
+msgstr "Statistik"
+
+#: modo_extension.py:25
 msgid "Graphical statistics about emails traffic using RRDtool"
 msgstr "Grafisk statistik om e-post trafik med hjälp av RRDtool"
-#: modo_extension.py:31 templates/modoboa_stats/index.html:4
+
+#: modo_extension.py:34 templates/modoboa_stats/index.html:4
 msgid "Graphical statistics"
 msgstr "Grafisk statistik"
+
 #: templates/modoboa_stats/index.html:42
 msgid "Search a domain"
 msgstr "Sök en domän"
+
 #: templates/modoboa_stats/index.html:75
 msgid "Apply"
 msgstr "Applicera"
-#: views.py:34
+
+#: views.py:33
 msgid "No statistics available"
 msgstr "Ingen statistik tillgänglig"
-#: views.py:38
+
+#: views.py:39
 msgid "Day"
 msgstr "Dag"
-#: views.py:39
+
+#: views.py:40
 msgid "Week"
 msgstr "Vecka"
-#: views.py:40
+
+#: views.py:41
 msgid "Month"
 msgstr "Månad"
-#: views.py:41
+
+#: views.py:42
 msgid "Year"
 msgstr "År"
-#: views.py:42
+
+#: views.py:43
 msgid "Custom"
 msgstr "Anpassad"
-#: views.py:91
+
+#: views.py:85
 msgid "Unknown graphic set"
 msgstr "Okänt grafisk uppsättning"
-#: views.py:102
+
+#: views.py:96
 msgid "Bad custom period"
 msgstr "Ogiltig anpassad tid"
