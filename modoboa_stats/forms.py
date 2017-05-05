@@ -28,3 +28,12 @@ class ParametersForm(param_forms.AdminParametersForm):
             "Path to directory where RRD files are stored"),
         widget=forms.TextInput(attrs={"class": "form-control"})
     )
+
+    spam_detection = forms.ChoiceField(
+        label=ugettext_lazy("Spam detection software"),
+        choices=[("amavis", "Amavis"),
+                 ("rmilter", "Rmilter/Rspamd")],
+        initial="amavis",
+        help_text=ugettext_lazy("Anti-spam software used"),
+        widget=forms.Select(attrs={"class": "form-control"})
+    )

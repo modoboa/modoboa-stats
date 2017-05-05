@@ -80,11 +80,24 @@ class LogParser(object):
         self.date_expr = None
         self.line_expr = \
             re.compile(r"\s+([-\w\.]+)\s+(\w+)/?\w*[[](\d+)[]]:\s+(.*)")
-        self._amavis_expr = (
-            re.compile(
-                r"(INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@([^>]+)>.*"
-            )
-        )
+
+        self._virus_sigs = []
+        self._spam_sigs = []
+        spam_pattern = ""
+        spam_tool = param_tools.get_global_parameter(
+            "spam_detection", app="modoboa_stats")
+        if spam_tool == "amavis":
+            spam_pattern = \
+                r"(?P<result>INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@(?P<domain>[^>]+)>.*"
+            self._virus_sigs = ["INFECTED"]
+            self._spam_sigs = ["SPAM", "SPAMMY"]
+        elif spam_tool == "rmilter":
+            spam_pattern = \
+                r"<[0-9a-f]{10}>; msg done: .*; from: <[^>]+>; rcpt: <[^@]+@(?P<domain>[^>]+)>.*; spam scan: (?P<result>[^;]+); virus scan: .*$"
+            self._virus_sigs = []  # Can't be detected from one line.
+            self._spam_sigs = ["rejected, action: reject", "action: add header"]
+        self._spam_detect_expr = re.compile(spam_pattern)
+
         self._id_expr = re.compile(r"(\w+): (.*)")
         self._prev_se = -1
         self._prev_mi = -1
@@ -289,13 +302,15 @@ class LogParser(object):
         if not m:
             return
         host, prog, pid, log = m.groups()
-        m = self._amavis_expr.search(log)
+        m = self._spam_detect_expr.search(log)
         if m is not None:
-            if m.group(2) in self.domains:
-                if m.group(1) == "INFECTED":
-                    self.inc_counter(m.group(2), 'virus')
-                elif m.group(1) in ["SPAM", "SPAMMY"]:
-                    self.inc_counter(m.group(2), 'spam')
+            domain = m.group("domain")
+            spam_result = m.group("result")
+            if domain is not None and domain in self.domains:
+                if spam_result in self._virus_sigs:
+                    self.inc_counter(domain, 'virus')
+                elif spam_result in self._spam_sigs:
+                    self.inc_counter(domain, 'spam')
                 return
         m = self._id_expr.match(log)
         if m is None:
@@ -313,14 +328,14 @@ class LogParser(object):
         if m is not None:
             self.workdict[line_id] = {'from': m.group(1), 'size': 0}
             return
-        m = re.search("from=<([^>]*)>, size=(\d+)", line_log)
+        m = re.search(r"from=<([^>]*)>, size=(\d+)", line_log)
         if m is not None:
             self.workdict[line_id] = {
                 'from': m.group(1), 'size': string.atoi(m.group(2))
             }
             return
 
-        m = re.search("to=<([^>]*)>.*status=(\S+)", line_log)
+        m = re.search(r"to=<([^>]*)>.*status=(\S+)", line_log)
         if m is not None:
             if line_id not in self.workdict:
                 self._dprint("Inconsistent mail (%s: %s), skipping"
