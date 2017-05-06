@@ -64,10 +64,9 @@ class LogParser(object):
             self.__year = curtime.tm_year
         self.curmonth = curtime.tm_mon
 
-        self.data = {}
+        self.data = {"global": {}}
         self.domains = []
         self._load_domain_list()
-        self.data["global"] = {}
 
         self.workdict = {}
         self.lupdates = {}
@@ -94,8 +93,15 @@ class LogParser(object):
     def _load_domain_list(self):
         """Load the list of allowed domains."""
         for dom in Domain.objects.all():
-            self.domains += [str(dom.name)]
-            self.data[str(dom.name)] = {}
+            domname = str(dom.name)
+            self.domains += [domname]
+            self.data[domname] = {}
+
+            # Also add alias domains
+            for alias in dom.domainalias_set.all():
+                aliasname = str(alias.name)
+                self.domains += [aliasname]
+                self.data[aliasname] = {}
 
     def _dprint(self, msg):
         """Print a debug message if required.
