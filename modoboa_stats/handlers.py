@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 
 from modoboa.core import signals as core_signals
+from modoboa.parameters import tools as param_tools
 
 from . import graphics
 from . import signals
@@ -25,5 +26,5 @@ def menu(sender, location, user, **kwargs):
 @receiver(signals.get_graph_sets)
 def get_default_graphic_sets(sender, **kwargs):
     """Return graphic set."""
-    gset = graphics.MailTraffic()
+    gset = graphics.MailTraffic(param_tools.get_global_parameter("greylist"))
     return {gset.html_id: gset}

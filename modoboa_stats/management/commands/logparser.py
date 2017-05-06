@@ -39,13 +39,13 @@ from ...modo_extension import Stats
 rrdstep = 60
 xpoints = 540
 points_per_sample = 3
-variables = ["sent", "recv", "bounced", "reject", "spam", "virus",
+variables = ["sent", "recv", "bounced", "reject", "greylist", "spam", "virus",
              "size_sent", "size_recv"]
 
 
 class LogParser(object):
 
-    def __init__(self, options, workdir, year=None):
+    def __init__(self, options, workdir, year=None, greylist=False):
         """Constructor
         """
         self.logfile = options["logfile"]
@@ -89,9 +89,10 @@ class LogParser(object):
             "orig_to": r"orig_to=<([^>]*)>.*",
             "amavis": r"(?P<result>INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@(?P<domain>[^>]+)>.*",
             "rmilter_line": r"<(?P<hash>[0-9a-f]{10})>; (?P<line>.*)",
-            "rmilter_msg_done": r"msg done: queue_id: <(?P<queue_id>[^>]+)>; message id: <(?P<message_id>[^>]+)>.*; from: <(?P<from>[^>]+)>; rcpt: <(?P<rcpt>[^>]+)>",
+            "rmilter_msg_done": r"msg done: queue_id: <(?P<queue_id>[^>]+)>; message id: <(?P<message_id>[^>]+)>.*; from: <(?P<from>[^>]+)>; rcpt: <(?P<rcpt>[^>]+)>.*; spam scan: (?P<action>[^;]+); virus scan:",
             "rmilter_spam": r"mlfi_eom: (rejecting spam|add spam header to message according to spamd action)",
-            "rmilter_virus": r"mlfi_eom:.* virus found"
+            "rmilter_virus": r"mlfi_eom:.* virus found",
+            "rmilter_greylist": r"GREYLIST\([0-9]+\.[0-9]{2}\)\[greylisted[^\]]*\]"
         }
         self._regex = {k: re.compile(v) for k, v in self._regex.items()}
         self._srs_regex = {
@@ -102,6 +103,10 @@ class LogParser(object):
         self._srs_regex = {
             k: re.compile(v, re.IGNORECASE) for k, v in self._srs_regex.items()
         }
+
+        self.greylist = greylist
+        if greylist:
+            self._dprint("[settings] greylisting enabled")
 
         self._prev_se = -1
         self._prev_mi = -1
@@ -205,6 +210,17 @@ class LogParser(object):
                        *params)
         return m
 
+    def tune_rrd_datasources(self, fname, dsname):
+        """tune_rrd_datasources
+
+        Add missing Data Sources (DS) to existing Round Robin Archive (RRA):
+        See init_rrd for details.
+        """
+
+        # Set up data sources for our RRD
+        if rrdtool.tune(fname, 'DS:%s:ABSOLUTE:%s:0:U' % (dsname, rrdstep * 2)):
+            self._dprint("[rrd] added DS %s to %s" % (dsname, fname))
+
     def update_rrd(self, dom, t):
         """update_rrd
 
@@ -216,6 +232,8 @@ class LogParser(object):
         """
         fname = "%s/%s.rrd" % (self.workdir, dom)
         m = t - (t % rrdstep)
+
+        self._dprint("[rrd] updating %s" % fname)
         if not os.path.exists(fname):
             self.lupdates[fname] = self.init_rrd(fname, m)
             self._dprint("[rrd] create new RRD file %s" % fname)
@@ -245,7 +263,13 @@ class LogParser(object):
                 if self.verbose:
                     print "[rrd] VERBOSE update -t %s %s:%s (SKIP)" \
                         % (tpl, p, values)
-                rrdtool.update(str(fname), "-t", tpl, "%s:%s" % (p, values))
+                try:
+                    rrdtool.update(str(fname), "-t", tpl, "%s:%s" % (p, values))
+                except rrdtool.OperationalError as e:
+                    op_match = re.match(r"unknown DS name '(\w+)'", str(e))
+                    if op_match is not None:
+                        self.tune_rrd_datasources(str(fname), op_match.group(1))
+                    rrdtool.update(str(fname), "-t", tpl, "%s:%s" % (p, values))
 
         values = "%s" % m
         tpl = ""
@@ -258,7 +282,14 @@ class LogParser(object):
         if self.verbose:
             print "[rrd] VERBOSE update -t %s %s" % (tpl, values)
 
-        rrdtool.update(str(fname), "-t", tpl, values)
+        try:
+            rrdtool.update(str(fname), "-t", tpl, values)
+        except rrdtool.OperationalError as e:
+            op_match = re.match(r"unknown DS name '(\w+)'", str(e))
+            if op_match is not None:
+                self.tune_rrd_datasources(str(fname), op_match.group(1))
+            rrdtool.update(str(fname), "-t", tpl, values)
+
         self.lupdates[fname] = m
         return True
 
@@ -380,11 +411,21 @@ class LogParser(object):
             }
             return True
 
+        # Greylisting
+        if self.greylist:
+            m = self._regex["rmilter_greylist"].search(msg)
+            if m is not None:
+                self.workdict[workdict_key] = {
+                    "action": "greylist"
+                }
+                return True
+
         # Gather information about message sender and queue ID
         m = self._regex["rmilter_msg_done"].match(msg)
         if m is not None:
             qid = m.group("queue_id")
             dom = split_mailbox(m.group("rcpt"))[1]
+
             if workdict_key in self.workdict:
                 action = self.workdict[workdict_key].get("action", None)
                 if action is not None:
@@ -524,5 +565,7 @@ class Command(BaseCommand):
             options["logfile"] = param_tools.get_global_parameter(
                 "logfile", app="modoboa_stats")
         p = LogParser(options, param_tools.get_global_parameter(
-            "rrd_rootdir", app="modoboa_stats"))
+                "rrd_rootdir", app="modoboa_stats"),
+            None, param_tools.get_global_parameter(
+                "greylist", app="modoboa_stats"))
         p.process()

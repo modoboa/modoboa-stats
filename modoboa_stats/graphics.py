@@ -141,6 +141,12 @@ class AverageTraffic(Graphic):
 
     order = ["reject", "bounced", "recv", "sent", "virus", "spam"]
 
+    def __init__(self, greylist=False):
+        if greylist:
+            self.greylist = Curve("greylist", "dimgrey", ugettext_lazy("greylisted messages"))
+            self.order = ["reject", "greylist", "bounced", "recv", "sent", "virus", "spam"]
+        super(AverageTraffic, self).__init__()
+
 
 class AverageTrafficSize(Graphic):
     """Average traffic size."""
@@ -158,8 +164,10 @@ class GraphicSet(object):
     title = None
     _graphics = []
 
-    def __init__(self):
-        self.__ginstances = []
+    def __init__(self, instances=None):
+        if instances is None:
+            instances = []
+        self.__ginstances = instances
 
     @property
     def html_id(self):
@@ -187,3 +195,7 @@ class GraphicSet(object):
 class MailTraffic(GraphicSet):
     title = ugettext_lazy('Mail traffic')
     _graphics = [AverageTraffic, AverageTrafficSize]
+
+    def __init__(self, greylist=False):
+        instances = [AverageTraffic(greylist), AverageTrafficSize()]
+        super(MailTraffic, self).__init__(instances)
