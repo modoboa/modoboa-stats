@@ -64,10 +64,10 @@ class LogParser(object):
             self.__year = curtime.tm_year
         self.curmonth = curtime.tm_mon
 
-        self.data = {}
+        self.data = {"global": {}}
+        self.canonical_domain = {}
         self.domains = []
         self._load_domain_list()
-        self.data["global"] = {}
 
         self.workdict = {}
         self.lupdates = {}
@@ -94,8 +94,16 @@ class LogParser(object):
     def _load_domain_list(self):
         """Load the list of allowed domains."""
         for dom in Domain.objects.all():
-            self.domains += [str(dom.name)]
-            self.data[str(dom.name)] = {}
+            domname = str(dom.name)
+            self.domains += [domname]
+            self.canonical_domain[domname] = domname
+            self.data[domname] = {}
+
+            # Also add alias domains
+            for alias in dom.domainalias_set.all():
+                aliasname = str(alias.name)
+                self.domains += [aliasname]
+                self.canonical_domain[aliasname] = domname
 
     def _dprint(self, msg):
         """Print a debug message if required.
@@ -242,13 +250,14 @@ class LogParser(object):
         init = {}
         for v in variables:
             init[v] = 0
+        dom = self.canonical_domain[dom] if dom in self.domains else dom
         self.data[dom][self.cur_t] = init
 
     def inc_counter(self, dom, counter, val=1):
         if dom is not None and dom in self.domains:
-            if self.cur_t not in self.data[dom]:
+            if self.cur_t not in self.data[self.canonical_domain[dom]]:
                 self.initcounters(dom)
-            self.data[dom][self.cur_t][counter] += val
+            self.data[self.canonical_domain[dom]][self.cur_t][counter] += val
 
         if self.cur_t not in self.data["global"]:
             self.initcounters("global")
