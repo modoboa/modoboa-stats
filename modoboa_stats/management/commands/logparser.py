@@ -30,6 +30,7 @@ from django.core.management.base import BaseCommand
 
 from modoboa.admin.models import Domain
 from modoboa.parameters import tools as param_tools
+from modoboa.lib.email_utils import split_mailbox
 
 from ...lib import date_to_timestamp
 from ...modo_extension import Stats
@@ -283,6 +284,17 @@ class LogParser(object):
             return self.__year - 1
         return self.__year
 
+    def is_srs_forward(self, mail_address):
+        """ Check if mail address has been mangled by SRS
+
+        Sender Rewriting Scheme (SRS) modifies mail adresses so that they
+        always end in a local domain.
+
+        :param str mail_address
+        :return a boolean
+        """
+        return re.match("^(?:srs|SRS)[01]", mail_address) is not None
+
     def _parse_amavis(self, log, host, pid):
         """ Parse an Amavis log entry.
 
@@ -346,21 +358,30 @@ class LogParser(object):
                 self._dprint("Unsupported status %s, skipping" % msg_status)
                 return True
 
-            addrfrom = re.match("[^@]+@(.+)", self.workdict[queue_id]['from'])
-            if addrfrom is not None:
-                from_domain = addrfrom.group(1)
-                if from_domain in self.domains:
-                    self.inc_counter(from_domain, 'sent')
-                    self.inc_counter(from_domain, 'size_sent',
-                                     self.workdict[queue_id]['size'])
-            addrto = re.match("[^@]+@(.+)", msg_to)
-            domname = addrto.group(1) if addrto is not None else None
+            # orig_to is optional.
+            m = re.search("orig_to=<([^>]*)>.*", msg)
+            msg_orig_to = m.group(1) if m is not None else None
+
+            # Handle local "from" domains.
+            from_domain = split_mailbox(self.workdict[queue_id]["from"])[1]
+            if from_domain is not None and from_domain in self.domains:
+                self.inc_counter(from_domain, 'sent')
+                self.inc_counter(from_domain, 'size_sent',
+                                 self.workdict[queue_id]['size'])
+
+            # Handle local "to" domains.
+            to_domain = None
+            if msg_orig_to is not None and not self.is_srs_forward(msg_orig_to):
+                to_domain = split_mailbox(msg_orig_to)[1]
+            if to_domain is None:
+                to_domain = split_mailbox(msg_to)[1]
+
             if msg_status == "sent":
-                self.inc_counter(domname, 'recv')
-                self.inc_counter(domname, 'size_recv',
+                self.inc_counter(to_domain, 'recv')
+                self.inc_counter(to_domain, 'size_recv',
                                  self.workdict[queue_id]['size'])
             else:
-                self.inc_counter(domname, msg_status)
+                self.inc_counter(to_domain, msg_status)
             return True
 
         return False
