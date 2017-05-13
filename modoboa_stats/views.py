@@ -5,13 +5,15 @@
 import re
 import time
 
+from itertools import chain
+
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import (
     login_required, user_passes_test, permission_required
 )
 
-from modoboa.admin.models import Domain
+from modoboa.admin.models import Domain, DomainAlias
 from modoboa.lib.exceptions import BadRequest, PermDeniedException, NotFound
 from modoboa.lib.web_utils import (
     render_to_json_response
@@ -66,12 +68,13 @@ def check_domain_access(user, pattern):
             return domains.first().name
         return "global"
 
-    results = Domain.objects.filter(name__startswith=pattern)
-    if results.count() != 1:
+    results = list(chain(Domain.objects.filter(name__startswith=pattern),
+                         DomainAlias.objects.filter(name__startswith=pattern)))
+    if len(results) != 1:
         return None
-    if not user.can_access(results.first()):
+    if not user.can_access(results[0]):
         raise PermDeniedException
-    return results.first().name
+    return results[0].name
 
 
 @login_required
@@ -117,5 +120,9 @@ def graphs(request):
 @user_passes_test(lambda u: u.role != "SimpleUsers")
 def get_domain_list(request):
     """Get the list of domains the user can see."""
-    doms = [dom.name for dom in Domain.objects.get_for_admin(request.user)]
+    doms = []
+    for dom in Domain.objects.get_for_admin(request.user):
+        doms += [dom.name]
+        doms += [alias.name for alias in dom.domainalias_set.all()]
+
     return render_to_json_response(doms)
