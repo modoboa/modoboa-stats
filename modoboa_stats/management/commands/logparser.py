@@ -295,6 +295,25 @@ class LogParser(object):
         """
         return re.match("^(?:srs|SRS)[01]", mail_address) is not None
 
+    def reverse_srs(self, mail_address):
+        """ Try to unwind a mail address rewritten by SRS
+
+        Sender Rewriting Scheme (SRS) modifies mail adresses so that they
+        always end in a local domain. Common Postfix implementations of SRS
+        rewrite all non-local mail addresss.
+
+        :param str mail_address
+        :return a str
+        """
+        m = re.match(r"^SRS0[+-=]\S+=\S{2}=(\S+)=(\S+)\@\S+$",
+                     mail_address, re.IGNORECASE)
+        m = re.match(r"^SRS1[+-=]\S+=\S+==\S+=\S{2}=(\S+)=(\S+)\@\S+$",
+                         mail_address, re.IGNORECASE) if m is None else m
+        if m is not None:
+            return "%s@%s" % m.group(2, 1)
+        else:
+            return mail_address
+
     def _parse_amavis(self, log, host, pid):
         """ Parse an Amavis log entry.
 
@@ -342,7 +361,7 @@ class LogParser(object):
         m = re.search("from=<([^>]*)>, size=(\d+)", msg)
         if m is not None:
             self.workdict[queue_id] = {
-                'from': m.group(1), 'size': string.atoi(m.group(2))
+                'from': self.reverse_srs(m.group(1)), 'size': string.atoi(m.group(2))
             }
             return True
 
