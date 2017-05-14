@@ -351,11 +351,11 @@ class LogParser(object):
         if m is not None:
             (msg_to, msg_status) = m.groups()
             if queue_id not in self.workdict:
-                self._dprint("Inconsistent mail (%s: %s), skipping"
+                self._dprint("[parser] inconsistent mail (%s: %s), skipping"
                              % (queue_id, msg_to))
                 return True
             if not msg_status in variables:
-                self._dprint("Unsupported status %s, skipping" % msg_status)
+                self._dprint("[parser] unsupported status %s, skipping" % msg_status)
                 return True
 
             # orig_to is optional.
