@@ -58,7 +58,7 @@ class LogParser(object):
             sys.exit(1)
         self.workdir = workdir
         self.__year = year
-        self.cfs = ['AVERAGE', 'MAX']
+        self.cfs = ["AVERAGE", "MAX"]
 
         curtime = time.localtime()
         if not self.__year:
@@ -150,7 +150,7 @@ class LogParser(object):
             self._prev_mi = mi
             self._prev_ho = ho
             self._prev_se = se
-        return match.group('eol')
+        return match.group("eol")
 
     def init_rrd(self, fname, m):
         """init_rrd
@@ -163,7 +163,7 @@ class LogParser(object):
         parameter : start time
         return    : last epoch recorded
         """
-        ds_type = 'ABSOLUTE'
+        ds_type = "ABSOLUTE"
         rows = xpoints / points_per_sample
         realrows = int(rows * 1.1)    # ensure that the full range is covered
         day_steps = int(3600 * 24 / (rrdstep * rows))
@@ -174,17 +174,17 @@ class LogParser(object):
         # Set up data sources for our RRD
         params = []
         for v in variables:
-            params += ['DS:%s:%s:%s:0:U' % (v, ds_type, rrdstep * 2)]
+            params += ["DS:%s:%s:%s:0:U" % (v, ds_type, rrdstep * 2)]
 
         # Set up RRD to archive data
-        for cf in ['AVERAGE', 'MAX']:
+        for cf in ["AVERAGE", "MAX"]:
             for step in [day_steps, week_steps, month_steps, year_steps]:
-                params += ['RRA:%s:0.5:%s:%s' % (cf, step, realrows)]
+                params += ["RRA:%s:0.5:%s:%s" % (cf, step, realrows)]
 
         # With those setup, we can now created the RRD
         rrdtool.create(str(fname),
-                       '--start', str(m),
-                       '--step', str(rrdstep),
+                       "--start", str(m),
+                       "--step", str(rrdstep),
                        *params)
         return m
 
@@ -348,20 +348,20 @@ class LogParser(object):
         if queue_id == "NOQUEUE":
             addrto = re.match("reject: .*from=<.*> to=<[^@]+@([^>]+)>", msg)
             if addrto is not None and addrto.group(1) in self.domains:
-                self.inc_counter(addrto.group(1), 'reject')
+                self.inc_counter(addrto.group(1), "reject")
             return True
 
         # Message acknowledged.
         m = re.search("message-id=<([^>]*)>", msg)
         if m is not None:
-            self.workdict[queue_id] = {'from': m.group(1), 'size': 0}
+            self.workdict[queue_id] = {"from": m.group(1), "size": 0}
             return True
 
         # Message enqueued.
         m = re.search("from=<([^>]*)>, size=(\d+)", msg)
         if m is not None:
             self.workdict[queue_id] = {
-                'from': self.reverse_srs(m.group(1)), 'size': string.atoi(m.group(2))
+                "from": self.reverse_srs(m.group(1)), "size": string.atoi(m.group(2))
             }
             return True
 
@@ -384,9 +384,9 @@ class LogParser(object):
             # Handle local "from" domains.
             from_domain = split_mailbox(self.workdict[queue_id]["from"])[1]
             if from_domain is not None and from_domain in self.domains:
-                self.inc_counter(from_domain, 'sent')
-                self.inc_counter(from_domain, 'size_sent',
-                                 self.workdict[queue_id]['size'])
+                self.inc_counter(from_domain, "sent")
+                self.inc_counter(from_domain, "size_sent",
+                                 self.workdict[queue_id]["size"])
 
             # Handle local "to" domains.
             to_domain = None
@@ -396,9 +396,9 @@ class LogParser(object):
                 to_domain = split_mailbox(msg_to)[1]
 
             if msg_status == "sent":
-                self.inc_counter(to_domain, 'recv')
-                self.inc_counter(to_domain, 'size_recv',
-                                 self.workdict[queue_id]['size'])
+                self.inc_counter(to_domain, "recv")
+                self.inc_counter(to_domain, "size_recv",
+                                 self.workdict[queue_id]["size"])
             else:
                 self.inc_counter(to_domain, msg_status)
             return True
@@ -440,7 +440,7 @@ class LogParser(object):
 
 
 class Command(BaseCommand):
-    help = 'Log file parser'
+    help = "Log file parser"
 
     def add_arguments(self, parser):
         """Add extra arguments to command line."""
