@@ -30,6 +30,7 @@ from django.core.management.base import BaseCommand
 
 from modoboa.admin.models import Domain
 from modoboa.parameters import tools as param_tools
+from modoboa.lib.email_utils import split_mailbox
 
 from ...lib import date_to_timestamp
 from ...modo_extension import Stats
@@ -57,17 +58,16 @@ class LogParser(object):
             sys.exit(1)
         self.workdir = workdir
         self.__year = year
-        self.cfs = ['AVERAGE', 'MAX']
+        self.cfs = ["AVERAGE", "MAX"]
 
         curtime = time.localtime()
         if not self.__year:
             self.__year = curtime.tm_year
         self.curmonth = curtime.tm_mon
 
-        self.data = {}
+        self.data = {"global": {}}
         self.domains = []
         self._load_domain_list()
-        self.data["global"] = {}
 
         self.workdict = {}
         self.lupdates = {}
@@ -94,8 +94,15 @@ class LogParser(object):
     def _load_domain_list(self):
         """Load the list of allowed domains."""
         for dom in Domain.objects.all():
-            self.domains += [str(dom.name)]
-            self.data[str(dom.name)] = {}
+            domname = str(dom.name)
+            self.domains += [domname]
+            self.data[domname] = {}
+
+            # Also add alias domains
+            for alias in dom.domainalias_set.all():
+                aliasname = str(alias.name)
+                self.domains += [aliasname]
+                self.data[aliasname] = {}
 
     def _dprint(self, msg):
         """Print a debug message if required.
@@ -143,7 +150,7 @@ class LogParser(object):
             self._prev_mi = mi
             self._prev_ho = ho
             self._prev_se = se
-        return match.group('eol')
+        return match.group("eol")
 
     def init_rrd(self, fname, m):
         """init_rrd
@@ -156,7 +163,7 @@ class LogParser(object):
         parameter : start time
         return    : last epoch recorded
         """
-        ds_type = 'ABSOLUTE'
+        ds_type = "ABSOLUTE"
         rows = xpoints / points_per_sample
         realrows = int(rows * 1.1)    # ensure that the full range is covered
         day_steps = int(3600 * 24 / (rrdstep * rows))
@@ -167,17 +174,17 @@ class LogParser(object):
         # Set up data sources for our RRD
         params = []
         for v in variables:
-            params += ['DS:%s:%s:%s:0:U' % (v, ds_type, rrdstep * 2)]
+            params += ["DS:%s:%s:%s:0:U" % (v, ds_type, rrdstep * 2)]
 
         # Set up RRD to archive data
-        for cf in ['AVERAGE', 'MAX']:
+        for cf in ["AVERAGE", "MAX"]:
             for step in [day_steps, week_steps, month_steps, year_steps]:
-                params += ['RRA:%s:0.5:%s:%s' % (cf, step, realrows)]
+                params += ["RRA:%s:0.5:%s:%s" % (cf, step, realrows)]
 
         # With those setup, we can now created the RRD
         rrdtool.create(str(fname),
-                       '--start', str(m),
-                       '--step', str(rrdstep),
+                       "--start", str(m),
+                       "--step", str(rrdstep),
                        *params)
         return m
 
@@ -277,6 +284,127 @@ class LogParser(object):
             return self.__year - 1
         return self.__year
 
+    def is_srs_forward(self, mail_address):
+        """ Check if mail address has been mangled by SRS
+
+        Sender Rewriting Scheme (SRS) modifies mail adresses so that they
+        always end in a local domain.
+
+        :param str mail_address
+        :return a boolean
+        """
+        return re.match("^(?:srs|SRS)[01]", mail_address) is not None
+
+    def reverse_srs(self, mail_address):
+        """ Try to unwind a mail address rewritten by SRS
+
+        Sender Rewriting Scheme (SRS) modifies mail adresses so that they
+        always end in a local domain. Common Postfix implementations of SRS
+        rewrite all non-local mail addresss.
+
+        :param str mail_address
+        :return a str
+        """
+        m = re.match(r"^SRS0[+-=]\S+=\S{2}=(\S+)=(\S+)\@\S+$",
+                     mail_address, re.IGNORECASE)
+        m = re.match(r"^SRS1[+-=]\S+=\S+==\S+=\S{2}=(\S+)=(\S+)\@\S+$",
+                         mail_address, re.IGNORECASE) if m is None else m
+        if m is not None:
+            return "%s@%s" % m.group(2, 1)
+        else:
+            return mail_address
+
+    def _parse_amavis(self, log, host, pid):
+        """ Parse an Amavis log entry.
+
+        :param str log: logged message
+        :param str host: hostname
+        :param str pid: process ID
+        :return: True on success
+        """
+        m = self._amavis_expr.search(log)
+        if m is not None and m.group(2) in self.domains:
+            if m.group(1) == "INFECTED":
+                self.inc_counter(m.group(2), "virus")
+            elif m.group(1) in ["SPAM", "SPAMMY"]:
+                self.inc_counter(m.group(2), "spam")
+            return True
+
+    def _parse_postfix(self, log, host, pid):
+        """ Parse a log entry generated by Postfix.
+
+        :param str log: logged message
+        :param str host: hostname
+        :param str pid: process ID
+        :return: True on success
+        """
+        m = self._id_expr.match(log)
+        if m is None:
+            return False
+
+        queue_id, msg = m.groups()
+
+        # Handle rejected mails.
+        if queue_id == "NOQUEUE":
+            addrto = re.match("reject: .*from=<.*> to=<[^@]+@([^>]+)>", msg)
+            if addrto is not None and addrto.group(1) in self.domains:
+                self.inc_counter(addrto.group(1), "reject")
+            return True
+
+        # Message acknowledged.
+        m = re.search("message-id=<([^>]*)>", msg)
+        if m is not None:
+            self.workdict[queue_id] = {"from": m.group(1), "size": 0}
+            return True
+
+        # Message enqueued.
+        m = re.search("from=<([^>]*)>, size=(\d+)", msg)
+        if m is not None:
+            self.workdict[queue_id] = {
+                "from": self.reverse_srs(m.group(1)), "size": string.atoi(m.group(2))
+            }
+            return True
+
+        # Message disposition.
+        m = re.search("to=<([^>]*)>.*status=(\S+)", msg)
+        if m is not None:
+            (msg_to, msg_status) = m.groups()
+            if queue_id not in self.workdict:
+                self._dprint("[parser] inconsistent mail (%s: %s), skipping"
+                             % (queue_id, msg_to))
+                return True
+            if not msg_status in variables:
+                self._dprint("[parser] unsupported status %s, skipping" % msg_status)
+                return True
+
+            # orig_to is optional.
+            m = re.search("orig_to=<([^>]*)>.*", msg)
+            msg_orig_to = m.group(1) if m is not None else None
+
+            # Handle local "from" domains.
+            from_domain = split_mailbox(self.workdict[queue_id]["from"])[1]
+            if from_domain is not None and from_domain in self.domains:
+                self.inc_counter(from_domain, "sent")
+                self.inc_counter(from_domain, "size_sent",
+                                 self.workdict[queue_id]["size"])
+
+            # Handle local "to" domains.
+            to_domain = None
+            if msg_orig_to is not None and not self.is_srs_forward(msg_orig_to):
+                to_domain = split_mailbox(msg_orig_to)[1]
+            if to_domain is None:
+                to_domain = split_mailbox(msg_to)[1]
+
+            if msg_status == "sent":
+                self.inc_counter(to_domain, "recv")
+                self.inc_counter(to_domain, "size_recv",
+                                 self.workdict[queue_id]["size"])
+            else:
+                self.inc_counter(to_domain, msg_status)
+            return True
+
+        return False
+
     def _parse_line(self, line):
         """Parse a single log line.
 
@@ -289,61 +417,12 @@ class LogParser(object):
         if not m:
             return
         host, prog, pid, log = m.groups()
-        m = self._amavis_expr.search(log)
-        if m is not None:
-            if m.group(2) in self.domains:
-                if m.group(1) == "INFECTED":
-                    self.inc_counter(m.group(2), 'virus')
-                elif m.group(1) in ["SPAM", "SPAMMY"]:
-                    self.inc_counter(m.group(2), 'spam')
-                return
-        m = self._id_expr.match(log)
-        if m is None:
-            self._dprint("Unknown line format: %s" % log)
-            return
-        (line_id, line_log) = m.groups()
-        if line_id == "NOQUEUE":
-            addrto = re.match(
-                "reject: .*from=<.*> to=<[^@]+@([^>]+)>",
-                line_log)
-            if addrto and addrto.group(1) in self.domains:
-                self.inc_counter(addrto.group(1), 'reject')
-            return
-        m = re.search("message-id=<([^>]*)>", line_log)
-        if m is not None:
-            self.workdict[line_id] = {'from': m.group(1), 'size': 0}
-            return
-        m = re.search("from=<([^>]*)>, size=(\d+)", line_log)
-        if m is not None:
-            self.workdict[line_id] = {
-                'from': m.group(1), 'size': string.atoi(m.group(2))
-            }
-            return
 
-        m = re.search("to=<([^>]*)>.*status=(\S+)", line_log)
-        if m is not None:
-            if line_id not in self.workdict:
-                self._dprint("Inconsistent mail (%s: %s), skipping"
-                             % (line_id, m.group(1)))
-                return
-            if not m.group(2) in variables:
-                self._dprint("Unsupported status %s, skipping" % m.group(2))
-                return
-            addrfrom = re.match("([^@]+)@(.+)", self.workdict[line_id]['from'])
-            if addrfrom is not None and addrfrom.group(2) in self.domains:
-                self.inc_counter(addrfrom.group(2), 'sent')
-                self.inc_counter(addrfrom.group(2), 'size_sent',
-                                 self.workdict[line_id]['size'])
-            addrto = re.match("([^@]+)@(.+)", m.group(1))
-            domname = addrto.group(2) if addrto is not None else None
-            if m.group(2) == "sent":
-                self.inc_counter(domname, 'recv')
-                self.inc_counter(domname, 'size_recv',
-                                 self.workdict[line_id]['size'])
-            else:
-                self.inc_counter(domname, m.group(2))
-            return
-        self._dprint("Unknown line format: %s" % line_log)
+        try:
+            if not getattr(self, "_parse_{}".format(prog))(log, host, pid):
+                self._dprint("[parser] ignoring {} log: {}".format(prog, log))
+        except AttributeError:
+            self._dprint("[parser] no log handler for \"{}\": {}".format(prog, log))
 
     def process(self):
         """Process the log file.
@@ -361,7 +440,7 @@ class LogParser(object):
 
 
 class Command(BaseCommand):
-    help = 'Log file parser'
+    help = "Log file parser"
 
     def add_arguments(self, parser):
         """Add extra arguments to command line."""
