@@ -71,21 +71,34 @@ class LogParser(object):
 
         self.workdict = {}
         self.lupdates = {}
-        self._s_date_expr = \
-            re.compile(
-                r"(?P<month>\w+)\s+(?P<day>\d+)\s+(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)(?P<eol>.*)")
-        self._hp_date_expr = \
-            re.compile(
-                r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)T(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)\.\d+\+\d+:\d+(?P<eol>.*)")
+
+        # set up regular expression
+        self._date_expressions = [
+            r"(?P<month>\w+)\s+(?P<day>\d+)\s+(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)(?P<eol>.*)",
+            r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)T(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)\.\d+\+\d+:\d+(?P<eol>.*)"
+        ]
+        self._date_expressions = [re.compile(v) for v in self._date_expressions]
         self.date_expr = None
-        self.line_expr = \
-            re.compile(r"\s+([-\w\.]+)\s+(\w+)/?\w*[[](\d+)[]]:\s+(.*)")
-        self._amavis_expr = (
-            re.compile(
-                r"(INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@([^>]+)>.*"
-            )
-        )
-        self._id_expr = re.compile(r"(\w+): (.*)")
+        self._regex = {
+            "line": r"\s+([-\w\.]+)\s+(\w+)/?\w*[[](\d+)[]]:\s+(.*)",
+            "id": r"(\w+): (.*)",
+            "reject": r"reject: .*from=<.*> to=<[^@]+@([^>]+)>",
+            "message-id": r"message-id=<([^>]*)>",
+            "from+size": r"from=<([^>]*)>, size=(\d+)",
+            "to+status": r"to=<([^>]*)>.*status=(\S+)",
+            "orig_to": r"orig_to=<([^>]*)>.*",
+            "amavis": r"(INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@([^>]+)>.*"
+        }
+        self._regex = {k: re.compile(v) for k, v in self._regex.items()}
+        self._srs_regex = {
+            "detect_srs": "^SRS[01][+-=]",
+            "reverse_srs0": r"^SRS0[+-=]\S+=\S{2}=(\S+)=(\S+)\@\S+$",
+            "reverse_srs1": r"^SRS1[+-=]\S+=\S+==\S+=\S{2}=(\S+)=(\S+)\@\S+$"
+        }
+        self._srs_regex = {
+            k: re.compile(v, re.IGNORECASE) for k, v in self._srs_regex.items()
+        }
+
         self._prev_se = -1
         self._prev_mi = -1
         self._prev_ho = -1
@@ -125,7 +138,7 @@ class LogParser(object):
         """
         match = None
         if self.date_expr is None:
-            for expr in [self._s_date_expr, self._hp_date_expr]:
+            for expr in self._date_expressions:
                 match = expr.match(line)
                 if match is not None:
                     self.date_expr = expr
@@ -293,7 +306,7 @@ class LogParser(object):
         :param str mail_address
         :return a boolean
         """
-        return re.match("^(?:srs|SRS)[01]", mail_address) is not None
+        return self._srs_regex["detect_srs"].match(mail_address) is not None
 
     def reverse_srs(self, mail_address):
         """ Try to unwind a mail address rewritten by SRS
@@ -305,10 +318,10 @@ class LogParser(object):
         :param str mail_address
         :return a str
         """
-        m = re.match(r"^SRS0[+-=]\S+=\S{2}=(\S+)=(\S+)\@\S+$",
-                     mail_address, re.IGNORECASE)
-        m = re.match(r"^SRS1[+-=]\S+=\S+==\S+=\S{2}=(\S+)=(\S+)\@\S+$",
-                         mail_address, re.IGNORECASE) if m is None else m
+        m = self._srs_regex["reverse_srs0"].match(mail_address)
+        m = self._srs_regex["reverse_srs1"].match(mail_address) \
+            if m is None else m
+
         if m is not None:
             return "%s@%s" % m.group(2, 1)
         else:
@@ -322,7 +335,7 @@ class LogParser(object):
         :param str pid: process ID
         :return: True on success
         """
-        m = self._amavis_expr.search(log)
+        m = self._regex["amavis"].search(log)
         if m is not None and m.group(2) in self.domains:
             if m.group(1) == "INFECTED":
                 self.inc_counter(m.group(2), "virus")
@@ -338,7 +351,7 @@ class LogParser(object):
         :param str pid: process ID
         :return: True on success
         """
-        m = self._id_expr.match(log)
+        m = self._regex["id"].match(log)
         if m is None:
             return False
 
@@ -346,19 +359,19 @@ class LogParser(object):
 
         # Handle rejected mails.
         if queue_id == "NOQUEUE":
-            addrto = re.match("reject: .*from=<.*> to=<[^@]+@([^>]+)>", msg)
+            addrto = self._regex["reject"].match(msg)
             if addrto is not None and addrto.group(1) in self.domains:
                 self.inc_counter(addrto.group(1), "reject")
             return True
 
         # Message acknowledged.
-        m = re.search("message-id=<([^>]*)>", msg)
+        m = self._regex["message-id"].search(msg)
         if m is not None:
             self.workdict[queue_id] = {"from": m.group(1), "size": 0}
             return True
 
         # Message enqueued.
-        m = re.search("from=<([^>]*)>, size=(\d+)", msg)
+        m = self._regex["from+size"].search(msg)
         if m is not None:
             self.workdict[queue_id] = {
                 "from": self.reverse_srs(m.group(1)), "size": string.atoi(m.group(2))
@@ -366,7 +379,7 @@ class LogParser(object):
             return True
 
         # Message disposition.
-        m = re.search("to=<([^>]*)>.*status=(\S+)", msg)
+        m = self._regex["to+status"].search(msg)
         if m is not None:
             (msg_to, msg_status) = m.groups()
             if queue_id not in self.workdict:
@@ -374,11 +387,12 @@ class LogParser(object):
                              % (queue_id, msg_to))
                 return True
             if not msg_status in variables:
-                self._dprint("[parser] unsupported status %s, skipping" % msg_status)
+                self._dprint("[parser] unsupported status %s, skipping"
+                             % msg_status)
                 return True
 
             # orig_to is optional.
-            m = re.search("orig_to=<([^>]*)>.*", msg)
+            m = self._regex["orig_to"].search(msg)
             msg_orig_to = m.group(1) if m is not None else None
 
             # Handle local "from" domains.
@@ -413,7 +427,7 @@ class LogParser(object):
         line = self._parse_date(line)
         if line is None:
             return
-        m = self.line_expr.match(line)
+        m = self._regex["line"].match(line)
         if not m:
             return
         host, prog, pid, log = m.groups()
