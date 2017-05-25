@@ -450,9 +450,13 @@ class LogParser(object):
 
         # Handle rejected mails.
         if queue_id == "NOQUEUE":
-            addrto = self._regex["reject"].match(msg)
-            if addrto is not None and addrto.group(1) in self.domains:
-                self.inc_counter(addrto.group(1), "reject")
+            m = self._regex["reject"].match(msg)
+            dom = m.group(1) if m is not None else None
+            if dom in self.domains:
+                if self.greylist and "Greylisted" in msg:
+                    self.inc_counter(dom, "greylist")
+                else:
+                    self.inc_counter(dom, "reject")
             return True
 
         # Message acknowledged.
