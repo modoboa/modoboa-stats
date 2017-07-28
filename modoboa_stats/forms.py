@@ -32,5 +32,6 @@ class ParametersForm(param_forms.AdminParametersForm):
     greylist = form_utils.YesNoField(
         label=ugettext_lazy("Show greylisted messages"),
         initial=False,
-        help_text=ugettext_lazy("Differentiate between hard and soft rejects (greylisting)")
+        help_text=ugettext_lazy(
+            "Differentiate between hard and soft rejects (greylisting)")
     )

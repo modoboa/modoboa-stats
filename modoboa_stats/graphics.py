@@ -143,8 +143,12 @@ class AverageTraffic(Graphic):
 
     def __init__(self, greylist=False):
         if greylist:
-            self.greylist = Curve("greylist", "dimgrey", ugettext_lazy("greylisted messages"))
-            self.order = ["reject", "greylist", "bounced", "recv", "sent", "virus", "spam"]
+            self.greylist = Curve(
+                "greylist", "dimgrey", ugettext_lazy("greylisted messages"))
+            self.order = [
+                "reject", "greylist", "bounced", "recv", "sent", "virus",
+                "spam"
+            ]
         super(AverageTraffic, self).__init__()
 
 

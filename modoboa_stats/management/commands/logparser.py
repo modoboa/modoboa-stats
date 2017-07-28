@@ -74,10 +74,11 @@ class LogParser(object):
 
         # set up regular expression
         self._date_expressions = [
-            r"(?P<month>\w+)\s+(?P<day>\d+)\s+(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)(?P<eol>.*)",
-            r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)T(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)\.\d+\+\d+:\d+(?P<eol>.*)"
+            r"(?P<month>\w+)\s+(?P<day>\d+)\s+(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)(?P<eol>.*)",  # noqa
+            r"(?P<year>\d+)-(?P<month>\d+)-(?P<day>\d+)T(?P<hour>\d+):(?P<min>\d+):(?P<sec>\d+)\.\d+\+\d+:\d+(?P<eol>.*)"  # noqa
         ]
-        self._date_expressions = [re.compile(v) for v in self._date_expressions]
+        self._date_expressions = [
+            re.compile(v) for v in self._date_expressions]
         self.date_expr = None
         self._regex = {
             "line": r"\s+([-\w\.]+)\s+(\w+)/?\w*[[](\d+)[]]:\s+(.*)",
@@ -87,12 +88,13 @@ class LogParser(object):
             "from+size": r"from=<([^>]*)>, size=(\d+)",
             "to+status": r"to=<([^>]*)>.*status=(\S+)",
             "orig_to": r"orig_to=<([^>]*)>.*",
-            "amavis": r"(?P<result>INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@(?P<domain>[^>]+)>.*",
+            "amavis": r"(?P<result>INFECTED|SPAM|SPAMMY) .* <[^>]+> -> <[^@]+@(?P<domain>[^>]+)>.*",  # noqa
             "rmilter_line": r"<(?P<hash>[0-9a-f]{10})>; (?P<line>.*)",
-            "rmilter_msg_done": r"msg done: queue_id: <(?P<queue_id>[^>]+)>; message id: <(?P<message_id>[^>]+)>.*; from: <(?P<from>[^>]+)>; rcpt: <(?P<rcpt>[^>]+)>.*; spam scan: (?P<action>[^;]+); virus scan:",
-            "rmilter_spam": r"mlfi_eom: (rejecting spam|add spam header to message according to spamd action)",
+            "rmilter_msg_done": r"msg done: queue_id: <(?P<queue_id>[^>]+)>; message id: <(?P<message_id>[^>]+)>.*; from: <(?P<from>[^>]+)>; rcpt: <(?P<rcpt>[^>]+)>.*; spam scan: (?P<action>[^;]+); virus scan:",  # noqa
+            "rmilter_spam": r"mlfi_eom: (rejecting spam|add spam header to message according to spamd action)",  # noqa
             "rmilter_virus": r"mlfi_eom:.* virus found",
-            "rmilter_greylist": r"GREYLIST\([0-9]+\.[0-9]{2}\)\[greylisted[^\]]*\]"
+            "rmilter_greylist": (
+                r"GREYLIST\([0-9]+\.[0-9]{2}\)\[greylisted[^\]]*\]")
         }
         self._regex = {k: re.compile(v) for k, v in self._regex.items()}
         self._srs_regex = {
@@ -216,9 +218,8 @@ class LogParser(object):
         Add missing Data Sources (DS) to existing Round Robin Archive (RRA):
         See init_rrd for details.
         """
-
-        # Set up data sources for our RRD
-        if rrdtool.tune(fname, 'DS:%s:ABSOLUTE:%s:0:U' % (dsname, rrdstep * 2)):
+        ds_def = "DS:%s:ABSOLUTE:%s:0:U" % (dsname, rrdstep * 2)
+        if rrdtool.tune(fname, ds_def):
             self._dprint("[rrd] added DS %s to %s" % (dsname, fname))
 
     def update_rrd(self, dom, t):
@@ -264,12 +265,15 @@ class LogParser(object):
                     print "[rrd] VERBOSE update -t %s %s:%s (SKIP)" \
                         % (tpl, p, values)
                 try:
-                    rrdtool.update(str(fname), "-t", tpl, "%s:%s" % (p, values))
+                    rrdtool.update(
+                        str(fname), "-t", tpl, "%s:%s" % (p, values))
                 except rrdtool.OperationalError as e:
                     op_match = re.match(r"unknown DS name '(\w+)'", str(e))
                     if op_match is not None:
-                        self.tune_rrd_datasources(str(fname), op_match.group(1))
-                    rrdtool.update(str(fname), "-t", tpl, "%s:%s" % (p, values))
+                        self.tune_rrd_datasources(
+                            str(fname), op_match.group(1))
+                    rrdtool.update(
+                        str(fname), "-t", tpl, "%s:%s" % (p, values))
 
         values = "%s" % m
         tpl = ""
@@ -423,7 +427,6 @@ class LogParser(object):
         # Gather information about message sender and queue ID
         m = self._regex["rmilter_msg_done"].match(msg)
         if m is not None:
-            qid = m.group("queue_id")
             dom = split_mailbox(m.group("rcpt"))[1]
 
             if workdict_key in self.workdict:
@@ -469,7 +472,8 @@ class LogParser(object):
         m = self._regex["from+size"].search(msg)
         if m is not None:
             self.workdict[queue_id] = {
-                "from": self.reverse_srs(m.group(1)), "size": string.atoi(m.group(2))
+                "from": self.reverse_srs(
+                    m.group(1)), "size": string.atoi(m.group(2))
             }
             return True
 
@@ -481,7 +485,7 @@ class LogParser(object):
                 self._dprint("[parser] inconsistent mail (%s: %s), skipping"
                              % (queue_id, msg_to))
                 return True
-            if not msg_status in variables:
+            if msg_status not in variables:
                 self._dprint("[parser] unsupported status %s, skipping"
                              % msg_status)
                 return True
@@ -499,7 +503,7 @@ class LogParser(object):
 
             # Handle local "to" domains.
             to_domain = None
-            if msg_orig_to is not None and not self.is_srs_forward(msg_orig_to):
+            if msg_orig_to and not self.is_srs_forward(msg_orig_to):
                 to_domain = split_mailbox(msg_orig_to)[1]
             if to_domain is None:
                 to_domain = split_mailbox(msg_to)[1]
@@ -531,7 +535,8 @@ class LogParser(object):
             if not getattr(self, "_parse_{}".format(prog))(log, host, pid):
                 self._dprint("[parser] ignoring {} log: {}".format(prog, log))
         except AttributeError:
-            self._dprint("[parser] no log handler for \"{}\": {}".format(prog, log))
+            self._dprint(
+                "[parser] no log handler for \"{}\": {}".format(prog, log))
 
     def process(self):
         """Process the log file.

@@ -33,4 +33,5 @@ class Stats(ModoExtension):
             "global", forms.ParametersForm,
             ugettext_lazy("Graphical statistics"))
 
+
 exts_pool.register_extension(Stats)
