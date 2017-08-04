@@ -51,13 +51,17 @@ class Command(BaseCommand):
             data.append(
                 "{}:{}".format(int(end.strftime("%s")), new_accounts * 60))
         else:
-            oldest_account = (
-                core_models.User.objects.values("date_joined")
-                .order_by("date_joined").first())
-            if oldest_account is None:
-                return
-            start = oldest_account["date_joined"].replace(
-                minute=0, second=0, microsecond=0)
+            existing_stats = {}
+            start = None
+            for user in core_models.User.objects.all().order_by("date_joined"):
+                hour = user.date_joined.replace(
+                    minute=0, second=0, microsecond=0) + relativedelta(hours=1)
+                if start is None:
+                    start = hour
+                hour = int(hour.strftime("%s"))
+                if hour not in existing_stats:
+                    existing_stats[hour] = 0
+                existing_stats[hour] += 1
             end = timezone.now().replace(
                 minute=0, second=0, microsecond=0)
             if os.path.exists(db_path):
@@ -65,8 +69,7 @@ class Command(BaseCommand):
             hour = start
             while hour < end:
                 next_hour = hour + relativedelta(hours=1)
-                new_accounts = core_models.User.objects.filter(
-                    date_joined__gte=hour, date_joined__lt=next_hour).count()
+                new_accounts = existing_stats.get(next_hour, 0)
                 data.append("{}:{}".format(
                     int(next_hour.strftime("%s")), new_accounts * 60))
                 hour = next_hour
