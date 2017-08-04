@@ -1,6 +1,7 @@
 """Classes to define graphics."""
 
 import inspect
+from itertools import chain
 import os
 
 from lxml import etree
@@ -8,6 +9,7 @@ from lxml import etree
 from django.conf import settings
 from django.utils.translation import ugettext as _, ugettext_lazy
 
+from modoboa.admin import models as admin_models
 from modoboa.lib import exceptions
 from modoboa.lib.sysutils import exec_cmd
 from modoboa.parameters import tools as param_tools
@@ -126,6 +128,45 @@ class Graphic(object):
         return result
 
 
+class GraphicSet(object):
+    """A set of graphics."""
+
+    domain_selector = False
+    title = None
+    _graphics = []
+
+    def __init__(self, instances=None):
+        if instances is None:
+            instances = []
+        self.__ginstances = instances
+
+    @property
+    def html_id(self):
+        return self.__class__.__name__.lower()
+
+    @property
+    def graphics(self):
+        if not self.__ginstances:
+            self.__ginstances = [graphic() for graphic in self._graphics]
+        return self.__ginstances
+
+    def get_graphic_names(self):
+        return [graphic.display_name for graphic in self._graphics]
+
+    def get_file_name(self, request):
+        """Return database file name."""
+        return self.file_name
+
+    def export(self, rrdfile, start, end):
+        result = {}
+        for graph in self.graphics:
+            result[graph.display_name] = {
+                "title": graph.title.encode("utf-8"),
+                "curves": graph.export(rrdfile, start, end)
+            }
+        return result
+
+
 class AverageTraffic(Graphic):
     """Average traffic."""
 
@@ -164,42 +205,64 @@ class AverageTrafficSize(Graphic):
     )
 
 
-class GraphicSet(object):
-    title = None
-    _graphics = []
-
-    def __init__(self, instances=None):
-        if instances is None:
-            instances = []
-        self.__ginstances = instances
-
-    @property
-    def html_id(self):
-        return self.__class__.__name__.lower()
-
-    @property
-    def graphics(self):
-        if not self.__ginstances:
-            self.__ginstances = [graphic() for graphic in self._graphics]
-        return self.__ginstances
-
-    def get_graphic_names(self):
-        return [graphic.display_name for graphic in self._graphics]
-
-    def export(self, rrdfile, start, end):
-        result = {}
-        for graph in self.graphics:
-            result[graph.display_name] = {
-                "title": graph.title.encode("utf-8"),
-                "curves": graph.export(rrdfile, start, end)
-            }
-        return result
-
-
 class MailTraffic(GraphicSet):
-    title = ugettext_lazy('Mail traffic')
+    """Mail traffic graphic set."""
+
+    domain_selector = True
+    title = ugettext_lazy("Mail traffic")
     _graphics = [AverageTraffic, AverageTrafficSize]
 
     def __init__(self, greylist=False):
         instances = [AverageTraffic(greylist), AverageTrafficSize()]
         super(MailTraffic, self).__init__(instances)
+
+    def _check_domain_access(self, user, pattern):
+        """Check if an administrator can access a domain.
+
+        If a non super administrator asks for the global view, we give him
+        a view on the first domain he manage instead.
+
+        :return: a domain name (str) or None.
+        """
+        if pattern in [None, "global"]:
+            if not user.is_superuser:
+                domains = admin_models.Domain.objects.get_for_admin(user)
+                if not domains.exists():
+                    return None
+                return domains.first().name
+            return "global"
+
+        results = list(
+            chain(
+                admin_models.Domain.objects.filter(name__startswith=pattern),
+                admin_models.DomainAlias.objects.filter(
+                    name__startswith=pattern)
+            )
+        )
+        if len(results) != 1:
+            return None
+        if not user.can_access(results[0]):
+            raise exceptions.PermDeniedException
+        return results[0].name
+
+    def get_file_name(self, request):
+        """Retrieve file name according to user and args."""
+        searchq = request.GET.get("searchquery", None)
+        return self._check_domain_access(request.user, searchq)
+
+
+class AccountCreationGraphic(Graphic):
+    """Account creation over time."""
+
+    title = ugettext_lazy("Average account creation (account/hour)")
+
+    accounts = Curve(
+        "new_accounts", "steelblue", ugettext_lazy("New accounts"))
+
+
+class AccountGraphicSet(GraphicSet):
+    """A graphic set for accounts."""
+
+    file_name = "new_accounts"
+    title = ugettext_lazy("Accounts")
+    _graphics = [AccountCreationGraphic]
