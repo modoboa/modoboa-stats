@@ -6,10 +6,10 @@
 Welcome to modoboa-stats's documentation!
 =========================================
 
-This plugin collects various statistics about emails traffic on your
-server. It parses a log file to collect information, store it into RRD
-files (see `rrdtool <http://oss.oetiker.ch/rrdtool/>`_) and then
-generates graphics in PNG format.
+This plugin collects various metrics on your server and displays nice
+graphics. It uses RRD files to store data (see `rrdtool
+<http://oss.oetiker.ch/rrdtool/>`_) and then generates graphics `c3.js
+<http://c3js.org/>`_.
 
 Contents:
 

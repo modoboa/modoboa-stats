@@ -32,12 +32,17 @@ parameters)::
   $ mkdir /tmp/modoboa
 
 To finish, you need to collect information periodically in order to
-feed the RRD files. Add the following line into root's crontab::
+feed the RRD files. Add the following lines into root's crontab::
 
   */5 * * * * <modoboa_site>/manage.py logparser &> /dev/null
   #
   # Or like this if you use a virtual environment:
   # */5 * * * * <virtualenv path/bin/python> <modoboa_site>/manage.py logparser &> /dev/null
+
+  0 * * * * <modoboa_site>/manage.py update_statistics
+  #
+  # Or like this if you use a virtual environment:
+  # 0 * * * * <virtualenv path/bin/python> <modoboa_site>/manage.py update_statistics
 
 Replace ``<modoboa_site>`` with the path of your Modoboa instance.
 
