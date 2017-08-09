@@ -340,5 +340,16 @@ function ModoChart(selection) {
         my(data);
     };
 
+    /**
+     * Hide the chart.
+     *
+     * @this {ModoChart}
+     */
+    my.hide = function () {
+        container.select("svg").remove();
+        $(container[0][0]).empty();
+    };
+
+
     return my;
 }

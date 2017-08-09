@@ -23,6 +23,8 @@ Stats.prototype = {
         var navobj = new History(this.options);
         this.navobj = navobj;
 
+        this.charts = {};
+
         if (navobj.params.searchquery !== undefined) {
             $("#searchquery").val(navobj.params.searchquery);
         }
@@ -133,21 +135,31 @@ Stats.prototype = {
      */
     charts_cb: function(data) {
         var menuid = "menu_" + this.navobj.getparam("gset");
+        var activeCharts = new Array();
 
+        $(".nav-sidebar > li").removeClass("active");
         $("#" + menuid).addClass("active");
         this.data = data;
-        if (this.charts !== undefined) {
-             $.each(this.charts, function(id, mychart) {
-                 mychart.update(data.graphs[id]);
-             });
+        if (!this.data.domain_selector) {
+            $("#domain-selector").hide();
         } else {
-            this.charts = {};
-            $.each(data.graphs, $.proxy(function(id, graphdef) {
+            $("#domain-selector").show();
+        }
+        $.each(data.graphs, $.proxy(function(id, graphdef) {
+            if (this.charts.hasOwnProperty(id)) {
+                    this.charts[id].update(graphdef);
+            } else {
                 var mychart = ModoChart("#gset");
                 this.charts[id] = mychart;
                 mychart(graphdef);
-            }, this));
-        }
+            }
+            activeCharts.push(id);
+        }, this));
+        $.each(this.charts, function (id, mychart) {
+            if (activeCharts.indexOf(id) === -1) {
+                mychart.hide();
+            }
+        });
     },
 
     search_domain: function(value) {

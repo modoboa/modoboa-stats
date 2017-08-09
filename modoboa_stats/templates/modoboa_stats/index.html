@@ -29,14 +29,16 @@ $(document).ready(function() {
 {% block leftcol %}
 <ul class="nav nav-sidebar">
   {% for id, gset in graph_sets.items %}
-  <li id="menu_{{ gset.html_id }}"><a href="#">{{ gset.title }}</a></li>
+    <li id="menu_{{ gset.html_id }}">
+      <a href="#graphs?gset={{ gset.html_id }}">{{ gset.title }}</a>
+    </li>
   {% endfor %}
 </ul>
 {% endblock %}
 
 {% block apparea %}
 <div id="menubar" class="row">
-  <div class="col-sm-5">
+  <div id="domain-selector" class="col-sm-5">
     <form class="form-horizontal" role="form">
       <div class="form-group has-feedback">
         <input class="form-control" id="searchquery" type="text" value="{% trans 'Search a domain' %}">

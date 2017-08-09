@@ -35,7 +35,8 @@ def index(request):
             raise NotFound(_("No statistics available"))
 
     graph_sets = {}
-    for result in signals.get_graph_sets.send(sender="index"):
+    for result in signals.get_graph_sets.send(
+            sender="index", user=request.user):
         graph_sets.update(result[1])
     periods = [
         {"name": "day", "label": _("Day")},
@@ -82,17 +83,17 @@ def check_domain_access(user, pattern):
 def graphs(request):
     gset = request.GET.get("gset", None)
     graph_sets = {}
-    for result in signals.get_graph_sets.send(sender="index"):
+    for result in signals.get_graph_sets.send(
+            sender="index", user=request.user):
         graph_sets.update(result[1])
     if gset not in graph_sets:
         raise NotFound(_("Unknown graphic set"))
-    searchq = request.GET.get("searchquery", None)
     period = request.GET.get("period", "day")
     tplvars = dict(graphs={}, period=period)
-    domain = check_domain_access(request.user, searchq)
-    if domain is None:
+    fname = graph_sets[gset].get_file_name(request)
+    if fname is None:
         return render_to_json_response({})
-    tplvars["domain"] = domain
+    tplvars["fname"] = fname
 
     if period == "custom":
         if "start" not in request.GET or "end" not in request.GET:
@@ -108,7 +109,8 @@ def graphs(request):
         start = "-1%s" % period
         period_name = period
 
-    tplvars["graphs"] = graph_sets[gset].export(tplvars["domain"], start, end)
+    tplvars["domain_selector"] = graph_sets[gset].domain_selector
+    tplvars["graphs"] = graph_sets[gset].export(tplvars["fname"], start, end)
     tplvars["period_name"] = period_name
     tplvars["start"] = start
     tplvars["end"] = end
