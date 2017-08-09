@@ -576,8 +576,10 @@ class Command(BaseCommand):
         if options["logfile"] is None:
             options["logfile"] = param_tools.get_global_parameter(
                 "logfile", app="modoboa_stats")
+        greylist = param_tools.get_global_parameter(
+            "greylist", raise_exception=False)
         p = LogParser(
             options, param_tools.get_global_parameter("rrd_rootdir"),
-            None, param_tools.get_global_parameter("greylist")
+            None, greylist
         )
         p.process()

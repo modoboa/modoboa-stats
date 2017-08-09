@@ -27,7 +27,7 @@ def menu(sender, location, user, **kwargs):
 def get_default_graphic_sets(sender, **kwargs):
     """Return graphic set."""
     mail_traffic_gset = graphics.MailTraffic(
-        param_tools.get_global_parameter("greylist"))
+        param_tools.get_global_parameter("greylist", raise_exception=False))
     result = {
         mail_traffic_gset.html_id: mail_traffic_gset
     }
