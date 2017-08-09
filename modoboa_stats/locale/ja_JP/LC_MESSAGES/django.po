@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Modoboa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-03 09:37+0100\n"
+"POT-Creation-Date: 2017-08-09 10:02+0200\n"
 "PO-Revision-Date: 2016-06-07 08:56+0000\n"
 "Last-Translator: cwatanab <chihiro.watanabe@live.jp>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/tonio/modoboa/"
@@ -39,59 +39,87 @@ msgstr "RRD ファイルを保管するためのディレクトリ"
 msgid "Path to directory where RRD files are stored"
 msgstr "RRD ファイルが保管されたディレクトリへのパス"
 
-#: graphics.py:91
+#: forms.py:33
+#, fuzzy
+#| msgid "rejected messages"
+msgid "Show greylisted messages"
+msgstr "拒否メッセージ"
+
+#: forms.py:36
+msgid "Differentiate between hard and soft rejects (greylisting)"
+msgstr ""
+
+#: graphics.py:93
 msgid "Failed to locate rrdtool binary."
 msgstr ""
 
-#: graphics.py:132
+#: graphics.py:173
 msgid "Average traffic (msgs/min)"
 msgstr "平均トラフィック (通/分)"
 
-#: graphics.py:135
+#: graphics.py:176
 msgid "sent messages"
 msgstr "送信メッセージ"
 
-#: graphics.py:136
+#: graphics.py:177
 msgid "received messages"
 msgstr "受信メッセージ"
 
-#: graphics.py:137
+#: graphics.py:178
 msgid "bounced messages"
 msgstr "バウンスメッセージ"
 
-#: graphics.py:138
+#: graphics.py:179
 msgid "rejected messages"
 msgstr "拒否メッセージ"
 
-#: graphics.py:139
+#: graphics.py:180
 #, fuzzy
 #| msgid "sent messages"
 msgid "virus messages"
 msgstr "送信メッセージ"
 
-#: graphics.py:140
+#: graphics.py:181
 #, fuzzy
 #| msgid "sent messages"
 msgid "spam messages"
 msgstr "送信メッセージ"
 
-#: graphics.py:148
+#: graphics.py:188
+#, fuzzy
+#| msgid "rejected messages"
+msgid "greylisted messages"
+msgstr "拒否メッセージ"
+
+#: graphics.py:199
 msgid "Average normal traffic size (bytes/min)"
 msgstr "平均トラフィックサイズ (バイト/分)"
 
-#: graphics.py:151
+#: graphics.py:202
 msgid "received size"
 msgstr "受信サイズ"
 
-#: graphics.py:153
+#: graphics.py:204
 msgid "sent size"
 msgstr "送信サイズ"
 
-#: graphics.py:188
+#: graphics.py:212
 msgid "Mail traffic"
 msgstr "メールトラフィック"
 
-#: handlers.py:20
+#: graphics.py:257
+msgid "Average account creation (account/hour)"
+msgstr ""
+
+#: graphics.py:260
+msgid "New accounts"
+msgstr ""
+
+#: graphics.py:267
+msgid "Accounts"
+msgstr ""
+
+#: handlers.py:21
 msgid "Statistics"
 msgstr "統計情報"
 
@@ -105,42 +133,42 @@ msgstr ""
 msgid "Graphical statistics"
 msgstr "グラフィカルな統計情報"
 
-#: templates/modoboa_stats/index.html:42
+#: templates/modoboa_stats/index.html:44
 msgid "Search a domain"
 msgstr "ドメインを検索"
 
-#: templates/modoboa_stats/index.html:75
+#: templates/modoboa_stats/index.html:77
 msgid "Apply"
 msgstr "適用"
 
-#: views.py:33
+#: views.py:35
 msgid "No statistics available"
 msgstr "統計情報がありません"
 
-#: views.py:39
+#: views.py:42
 msgid "Day"
 msgstr "日"
 
-#: views.py:40
+#: views.py:43
 msgid "Week"
 msgstr "週"
 
-#: views.py:41
+#: views.py:44
 msgid "Month"
 msgstr "月"
 
-#: views.py:42
+#: views.py:45
 msgid "Year"
 msgstr "年"
 
-#: views.py:43
+#: views.py:46
 msgid "Custom"
 msgstr "カスタム"
 
-#: views.py:85
+#: views.py:90
 msgid "Unknown graphic set"
 msgstr "不明なグラフィックセット"
 
-#: views.py:96
+#: views.py:100
 msgid "Bad custom period"
 msgstr "カスタム期間が不正です"

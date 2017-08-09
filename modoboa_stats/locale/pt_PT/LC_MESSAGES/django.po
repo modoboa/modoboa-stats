@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Modoboa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-03 09:37+0100\n"
+"POT-Creation-Date: 2017-08-09 10:02+0200\n"
 "PO-Revision-Date: 2014-12-29 12:51+0000\n"
 "Last-Translator: Mike C. <miguelmclara@gmail.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/"
@@ -44,59 +44,87 @@ msgstr "Diretório para armazenar os ficheiros RRD"
 msgid "Path to directory where RRD files are stored"
 msgstr "Caminho para o diretório onde os ficheiros RRD são guardados"
 
-#: graphics.py:91
+#: forms.py:33
+#, fuzzy
+#| msgid "rejected messages"
+msgid "Show greylisted messages"
+msgstr "mensagens rejeitadas"
+
+#: forms.py:36
+msgid "Differentiate between hard and soft rejects (greylisting)"
+msgstr ""
+
+#: graphics.py:93
 msgid "Failed to locate rrdtool binary."
 msgstr ""
 
-#: graphics.py:132
+#: graphics.py:173
 msgid "Average traffic (msgs/min)"
 msgstr "Trafego em média (msgs/min)"
 
-#: graphics.py:135
+#: graphics.py:176
 msgid "sent messages"
 msgstr "mensagens enviadas"
 
-#: graphics.py:136
+#: graphics.py:177
 msgid "received messages"
 msgstr "mensagens recebidas"
 
-#: graphics.py:137
+#: graphics.py:178
 msgid "bounced messages"
 msgstr "mensagens devolvidas"
 
-#: graphics.py:138
+#: graphics.py:179
 msgid "rejected messages"
 msgstr "mensagens rejeitadas"
 
-#: graphics.py:139
+#: graphics.py:180
 #, fuzzy
 #| msgid "sent messages"
 msgid "virus messages"
 msgstr "mensagens enviadas"
 
-#: graphics.py:140
+#: graphics.py:181
 #, fuzzy
 #| msgid "sent messages"
 msgid "spam messages"
 msgstr "mensagens enviadas"
 
-#: graphics.py:148
+#: graphics.py:188
+#, fuzzy
+#| msgid "rejected messages"
+msgid "greylisted messages"
+msgstr "mensagens rejeitadas"
+
+#: graphics.py:199
 msgid "Average normal traffic size (bytes/min)"
 msgstr "Tráfego em média normal por tamanho (bytes/min)"
 
-#: graphics.py:151
+#: graphics.py:202
 msgid "received size"
 msgstr "tamanho recebido"
 
-#: graphics.py:153
+#: graphics.py:204
 msgid "sent size"
 msgstr "tamanho enviado"
 
-#: graphics.py:188
+#: graphics.py:212
 msgid "Mail traffic"
 msgstr "Tráfego de correio"
 
-#: handlers.py:20
+#: graphics.py:257
+msgid "Average account creation (account/hour)"
+msgstr ""
+
+#: graphics.py:260
+msgid "New accounts"
+msgstr ""
+
+#: graphics.py:267
+msgid "Accounts"
+msgstr ""
+
+#: handlers.py:21
 msgid "Statistics"
 msgstr "Estatísticas"
 
@@ -108,42 +136,42 @@ msgstr "Estatísticas gráficas sobre tráfego de email usando RRDtool"
 msgid "Graphical statistics"
 msgstr "Estatísticas gráficas"
 
-#: templates/modoboa_stats/index.html:42
+#: templates/modoboa_stats/index.html:44
 msgid "Search a domain"
 msgstr "Procurar um domínio"
 
-#: templates/modoboa_stats/index.html:75
+#: templates/modoboa_stats/index.html:77
 msgid "Apply"
 msgstr "Aplicar"
 
-#: views.py:33
+#: views.py:35
 msgid "No statistics available"
 msgstr "Não há estatísticas disponíveis"
 
-#: views.py:39
+#: views.py:42
 msgid "Day"
 msgstr "Dia"
 
-#: views.py:40
+#: views.py:43
 msgid "Week"
 msgstr "Semana"
 
-#: views.py:41
+#: views.py:44
 msgid "Month"
 msgstr "Mês"
 
-#: views.py:42
+#: views.py:45
 msgid "Year"
 msgstr "Ano"
 
-#: views.py:43
+#: views.py:46
 msgid "Custom"
 msgstr "Personalizado"
 
-#: views.py:85
+#: views.py:90
 msgid "Unknown graphic set"
 msgstr "Conjunto de gráficos desconhecido"
 
-#: views.py:96
+#: views.py:100
 msgid "Bad custom period"
 msgstr "Período personalizado inválido"
