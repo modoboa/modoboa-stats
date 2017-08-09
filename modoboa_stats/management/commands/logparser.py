@@ -39,15 +39,14 @@ from ...modo_extension import Stats
 rrdstep = 60
 xpoints = 540
 points_per_sample = 3
-variables = ["sent", "recv", "bounced", "reject", "greylist", "spam", "virus",
+variables = ["sent", "recv", "bounced", "reject", "spam", "virus",
              "size_sent", "size_recv"]
 
 
 class LogParser(object):
 
     def __init__(self, options, workdir, year=None, greylist=False):
-        """Constructor
-        """
+        """Constructor."""
         self.logfile = options["logfile"]
         self.debug = options["debug"]
         self.verbose = options["verbose"]
@@ -108,6 +107,7 @@ class LogParser(object):
 
         self.greylist = greylist
         if greylist:
+            variables.insert(4, "greylist")
             self._dprint("[settings] greylisting enabled")
 
         self._prev_se = -1
@@ -212,8 +212,8 @@ class LogParser(object):
                        *params)
         return m
 
-    def tune_rrd_datasources(self, fname, dsname):
-        """tune_rrd_datasources.
+    def add_datasource_to_rrd(self, fname, dsname):
+        """Add a new data source to an exisitng file.
 
         Add missing Data Sources (DS) to existing Round Robin Archive (RRA):
         See init_rrd for details.
@@ -221,6 +221,21 @@ class LogParser(object):
         ds_def = "DS:%s:ABSOLUTE:%s:0:U" % (dsname, rrdstep * 2)
         rrdtool.tune(fname, ds_def)
         self._dprint("[rrd] added DS %s to %s" % (dsname, fname))
+
+    def add_point_to_rrd(self, fname, tpl, values, ts=None):
+        """Try to add a new point to RRD file."""
+        if ts:
+            values = "{}:{}".format(ts, values)
+        if self.verbose:
+            print "[rrd] VERBOSE update -t %s %s" % (tpl, values)
+        try:
+            rrdtool.update(str(fname), "-t", tpl, values)
+        except rrdtool.OperationalError as e:
+            op_match = re.match(r"unknown DS name '(\w+)'", str(e))
+            if op_match is None:
+                raise
+            self.tune_rrd_datasources(str(fname), op_match.group(1))
+            rrdtool.update(str(fname), "-t", tpl, values)
 
     def update_rrd(self, dom, t):
         """update_rrd
@@ -261,19 +276,7 @@ class LogParser(object):
                     values += ":"
                 values += "0"
             for p in range(self.lupdates[fname] + rrdstep, m, rrdstep):
-                if self.verbose:
-                    print "[rrd] VERBOSE update -t %s %s:%s (SKIP)" \
-                        % (tpl, p, values)
-                try:
-                    rrdtool.update(
-                        str(fname), "-t", tpl, "%s:%s" % (p, values))
-                except rrdtool.OperationalError as e:
-                    op_match = re.match(r"unknown DS name '(\w+)'", str(e))
-                    if op_match is not None:
-                        self.tune_rrd_datasources(
-                            str(fname), op_match.group(1))
-                    rrdtool.update(
-                        str(fname), "-t", tpl, "%s:%s" % (p, values))
+                self.add_point_to_rrd(fname, tpl, values, ts=p)
 
         values = "%s" % m
         tpl = ""
@@ -283,17 +286,7 @@ class LogParser(object):
             if tpl != "":
                 tpl += ":"
             tpl += v
-        if self.verbose:
-            print "[rrd] VERBOSE update -t %s %s" % (tpl, values)
-
-        try:
-            rrdtool.update(str(fname), "-t", tpl, values)
-        except rrdtool.OperationalError as e:
-            op_match = re.match(r"unknown DS name '(\w+)'", str(e))
-            if op_match is not None:
-                self.tune_rrd_datasources(str(fname), op_match.group(1))
-            rrdtool.update(str(fname), "-t", tpl, values)
-
+        self.add_point_to_rrd(fname, tpl, values)
         self.lupdates[fname] = m
         return True
 

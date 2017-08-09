@@ -1,7 +1,12 @@
 """Modoboa stats forms."""
 
+import rrdtool
+
 from django.utils.translation import ugettext_lazy
 from django import forms
+
+from versionfield.constants import DEFAULT_NUMBER_BITS
+from versionfield.version import Version
 
 from modoboa.lib import form_utils
 from modoboa.parameters import forms as param_forms
@@ -35,3 +40,11 @@ class ParametersForm(param_forms.AdminParametersForm):
         help_text=ugettext_lazy(
             "Differentiate between hard and soft rejects (greylisting)")
     )
+
+    def __init__(self, *args, **kwargs):
+        """Check RRDtool version."""
+        super(ParametersForm, self).__init__(*args, **kwargs)
+        rrd_version = Version(rrdtool.lib_version(), DEFAULT_NUMBER_BITS)
+        required_version = Version("1.6.0", DEFAULT_NUMBER_BITS)
+        if rrd_version < required_version:
+            del self.fields["greylist"]
