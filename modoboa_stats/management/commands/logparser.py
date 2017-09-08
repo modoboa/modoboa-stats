@@ -234,7 +234,7 @@ class LogParser(object):
             op_match = re.match(r"unknown DS name '(\w+)'", str(e))
             if op_match is None:
                 raise
-            self.tune_rrd_datasources(str(fname), op_match.group(1))
+            self.add_datasource_to_rrd(str(fname), op_match.group(1))
             rrdtool.update(str(fname), "-t", tpl, values)
 
     def update_rrd(self, dom, t):
