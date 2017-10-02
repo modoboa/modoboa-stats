@@ -5,6 +5,7 @@ from itertools import chain
 import os
 
 from lxml import etree
+import six
 
 from django.conf import settings
 from django.utils.translation import ugettext as _, ugettext_lazy
@@ -107,7 +108,7 @@ class Graphic(object):
         cmd = "{} xport --start {} --end {} ".format(
             self.rrdtool_binary, str(start), str(end))
         cmd += " ".join(cmdargs)
-        if isinstance(cmd, unicode):
+        if not isinstance(cmd, str):
             cmd = cmd.encode("utf-8")
         code, output = exec_cmd(cmd)
         if code:
@@ -161,7 +162,7 @@ class GraphicSet(object):
         result = {}
         for graph in self.graphics:
             result[graph.display_name] = {
-                "title": graph.title.encode("utf-8"),
+                "title": six.text_type(graph.title),
                 "curves": graph.export(rrdfile, start, end)
             }
         return result
