@@ -1,7 +1,7 @@
 modoboa-stats
 =============
 
-|landscape|
+|travis| |codecov| |landscape|
 
 Graphical statistics for Modoboa.
 
@@ -50,3 +50,8 @@ Additional documentation is available on `ReadTheDocs <http://modoboa-stats.read
    :target: https://landscape.io/github/modoboa/modoboa-stats/master
    :alt: Code Health
 
+.. |travis| image:: https://travis-ci.org/modoboa/modoboa-stats.svg?branch=master
+   :target: https://travis-ci.org/modoboa/modoboa-stats
+
+.. |codecov| image:: https://codecov.io/gh/modoboa/modoboa-stats/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/modoboa/modoboa-stats
