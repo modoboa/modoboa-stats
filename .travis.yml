@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
       - librrd-dev
+      - rrdtool
 
 python:
   - "2.7"

@@ -552,7 +552,7 @@ class LogParser(object):
         for line in self.f.readlines():
             self._parse_line(line)
 
-        for dom, data in self.data.iteritems():
+        for dom, data in self.data.items():
             self._dprint("[rrd] dealing with domain %s" % dom)
             for t in sorted(data.keys()):
                 self.update_rrd(dom, t)
