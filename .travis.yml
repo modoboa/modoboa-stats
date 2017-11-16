@@ -1,5 +1,10 @@
 language: python
 cache: pip
+addons:
+  apt:
+    packages:
+      - librrd-dev
+
 python:
   - "2.7"
   - "3.4"
