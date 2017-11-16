@@ -65,7 +65,7 @@ def graphs(request):
     tplvars = dict(graphs={}, period=period)
     fname = graph_sets[gset].get_file_name(request)
     if fname is None:
-        return render_to_json_response({})
+        raise BadRequest(_("Unknown domain"))
     tplvars["fname"] = fname
 
     if period == "custom":

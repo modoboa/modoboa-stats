@@ -94,6 +94,11 @@ class ViewsTestCase(RunCommandsMixin, ModoTestCase):
         )
         self.assertIn("averagetraffic", response["graphs"])
 
+        # unknown domain
+        response = self.ajax_get(
+            "{}?gset=mailtraffic&searchquery=unknown.com".format(url),
+            status=400)
+
         # check with greylist enabled
         self.set_global_parameter("greylist", True)
         response = self.ajax_get("{}?gset=mailtraffic".format(url))
