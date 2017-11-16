@@ -15,12 +15,11 @@ services:
   - postgres
 
 before_install:
-  - pip install codecov
-  - pip install -q psycopg2
+  - pip install -q codecov psycopg2 factory-boy testfixtures
+  - pip install -e git+https://github.com/modoboa/modoboa#egg=modoboa
 
 install:
-  - pip install -e git+https://github.com/modoboa/modoboa#egg=modoboa
-  - pip install -q factory-boy testfixtures
+  - pip install -r requirements.txt
   - python setup.py -q develop
 
 before_script:

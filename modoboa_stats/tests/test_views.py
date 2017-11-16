@@ -46,6 +46,7 @@ class RunCommandsMixin(object):
         call_command("update_statistics", *args)
 
 
+@override_settings(RRDTOOL_TEST_MODE=True)
 class ViewsTestCase(RunCommandsMixin, ModoTestCase):
     """Views test cases."""
 
@@ -57,9 +58,7 @@ class ViewsTestCase(RunCommandsMixin, ModoTestCase):
 
     def tearDown(self):
         super(ViewsTestCase, self).tearDown()
-        rrdtool_lookup_path = ["{}/rrdtool".format(os.path.dirname(__file__))]
-        with override_settings(RRDTOOL_LOOKUP_PATH=rrdtool_lookup_path):
-            self.set_global_parameter("greylist", False)
+        self.set_global_parameter("greylist", False)
 
     def test_index(self):
         """Test index view."""
@@ -96,9 +95,7 @@ class ViewsTestCase(RunCommandsMixin, ModoTestCase):
         self.assertIn("averagetraffic", response["graphs"])
 
         # check with greylist enabled
-        rrdtool_lookup_path = ["{}/rrdtool".format(os.path.dirname(__file__))]
-        with override_settings(RRDTOOL_LOOKUP_PATH=rrdtool_lookup_path):
-            self.set_global_parameter("greylist", True)
+        self.set_global_parameter("greylist", True)
         response = self.ajax_get("{}?gset=mailtraffic".format(url))
         self.assertIn("averagetraffic", response["graphs"])
 
@@ -133,6 +130,7 @@ class ViewsTestCase(RunCommandsMixin, ModoTestCase):
         self.assertIn("test2.com", response)
 
 
+@override_settings(RRDTOOL_TEST_MODE=True)
 class ManagementCommandsTestCase(RunCommandsMixin, ModoTestCase):
     """Management command test cases."""
 
@@ -148,8 +146,6 @@ class ManagementCommandsTestCase(RunCommandsMixin, ModoTestCase):
             path = os.path.join(self.workdir, "{}.rrd".format(d))
             self.assertTrue(os.path.exists(path))
 
-    @override_settings(
-        RRDTOOL_LOOKUP_PATH=["{}/rrdtool".format(os.path.dirname(__file__))])
     def test_logparser_with_greylist(self):
         """Test logparser when greylist activated."""
         self.set_global_parameter("greylist", True)
