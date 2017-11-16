@@ -2,6 +2,7 @@
 
 import rrdtool
 
+from django.conf import settings
 from django.utils.translation import ugettext_lazy
 from django import forms
 
@@ -46,5 +47,6 @@ class ParametersForm(param_forms.AdminParametersForm):
         super(ParametersForm, self).__init__(*args, **kwargs)
         rrd_version = Version(rrdtool.lib_version(), DEFAULT_NUMBER_BITS)
         required_version = Version("1.6.0", DEFAULT_NUMBER_BITS)
-        if rrd_version < required_version:
+        test_mode = getattr(settings, "RRDTOOL_TEST_MODE", False)
+        if rrd_version < required_version and not test_mode:
             del self.fields["greylist"]

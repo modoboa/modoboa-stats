@@ -63,19 +63,19 @@ class Command(BaseCommand):
                     existing_stats[hour] = 0
                 existing_stats[hour] += 1
             end = timezone.now().replace(
-                minute=0, second=0, microsecond=0)
+                minute=0, second=0, microsecond=0) + relativedelta(hours=1)
             if os.path.exists(db_path):
                 os.unlink(db_path)
             hour = start
-            while hour < end:
-                next_hour = hour + relativedelta(hours=1)
-                new_accounts = existing_stats.get(next_hour, 0)
+            while hour <= end:
+                new_accounts = existing_stats.get(int(hour.strftime("%s")), 0)
                 data.append("{}:{}".format(
-                    int(next_hour.strftime("%s")), new_accounts * 60))
-                hour = next_hour
+                    int(hour.strftime("%s")), new_accounts * 60))
+                hour += relativedelta(hours=1)
         if not os.path.exists(db_path):
             self._create_new_accounts_rrd_file(
-                db_path, int(start.strftime("%s")))
+                db_path, int((start - relativedelta(hours=1)).strftime("%s"))
+            )
         rrdtool.update(str(db_path), *data)
 
     def handle(self, *args, **options):

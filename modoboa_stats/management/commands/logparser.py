@@ -18,6 +18,8 @@ Predefined events are:
 
 """
 
+from __future__ import print_function
+
 import os
 import re
 import string
@@ -135,7 +137,7 @@ class LogParser(object):
         """
         if not self.debug:
             return
-        print msg
+        print(msg)
 
     def _parse_date(self, line):
         """Try to match a date inside :kw:`line` and to convert it to
@@ -227,7 +229,7 @@ class LogParser(object):
         if ts:
             values = "{}:{}".format(ts, values)
         if self.verbose:
-            print "[rrd] VERBOSE update -t %s %s" % (tpl, values)
+            print("[rrd] VERBOSE update -t %s %s" % (tpl, values))
         try:
             rrdtool.update(str(fname), "-t", tpl, values)
         except rrdtool.OperationalError as e:
@@ -259,7 +261,7 @@ class LogParser(object):
 
         if m <= self.lupdates[fname]:
             if self.verbose:
-                print "[rrd] VERBOSE events at %s already recorded in RRD" % m
+                print("[rrd] VERBOSE events at %s already recorded in RRD" % m)
             return False
 
         tpl = ""
@@ -550,7 +552,7 @@ class LogParser(object):
         for line in self.f.readlines():
             self._parse_line(line)
 
-        for dom, data in self.data.iteritems():
+        for dom, data in self.data.items():
             self._dprint("[rrd] dealing with domain %s" % dom)
             for t in sorted(data.keys()):
                 self.update_rrd(dom, t)
