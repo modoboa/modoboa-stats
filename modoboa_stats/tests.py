@@ -56,7 +56,7 @@ class ViewsTestCase(RunCommandsMixin, ModoTestCase):
 
     def tearDown(self):
         super(ViewsTestCase, self).tearDown()
-        # self.set_global_parameter("greylist", False)
+        self.set_global_parameter("greylist", False)
 
     def test_index(self):
         """Test index view."""
@@ -73,8 +73,6 @@ class ViewsTestCase(RunCommandsMixin, ModoTestCase):
         """Test graphs views."""
         self.run_logparser()
         url = reverse("modoboa_stats:graph_list")
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        print(response.content)
         self.ajax_get(url, status=404)
         response = self.ajax_get("{}?gset=mailtraffic".format(url))
         self.assertIn("averagetraffic", response["graphs"])

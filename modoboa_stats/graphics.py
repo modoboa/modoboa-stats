@@ -10,7 +10,7 @@ from lxml import etree
 import six
 
 from django.conf import settings
-from django.utils.encoding import smart_bytes
+from django.utils.encoding import smart_bytes, smart_text
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from modoboa.admin import models as admin_models
@@ -95,7 +95,7 @@ class Graphic(object):
         if dpath is None:
             raise exceptions.InternalError(
                 _("Failed to locate rrdtool binary."))
-        return dpath
+        return smart_text(dpath)
 
     def export(self, rrdfile, start, end):
         """Export data to XML using rrdtool and convert it to JSON."""
@@ -103,7 +103,8 @@ class Graphic(object):
         cmdargs = []
         for curve in self._curves:
             result += [{
-                "name": curve.legend, "color": curve.color, "data": []
+                "name": smart_text(curve.legend),
+                "color": curve.color, "data": []
             }]
             cmdargs += curve.to_rrd_command_args(rrdfile)
         code = 0
