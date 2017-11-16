@@ -1,5 +1,7 @@
 """Classes to define graphics."""
 
+from __future__ import unicode_literals
+
 import inspect
 from itertools import chain
 import os
@@ -8,6 +10,7 @@ from lxml import etree
 import six
 
 from django.conf import settings
+from django.utils.encoding import smart_bytes
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from modoboa.admin import models as admin_models
@@ -108,9 +111,7 @@ class Graphic(object):
         cmd = "{} xport --start {} --end {} ".format(
             self.rrdtool_binary, str(start), str(end))
         cmd += " ".join(cmdargs)
-        if not isinstance(cmd, str):
-            cmd = cmd.encode("utf-8")
-        code, output = exec_cmd(cmd)
+        code, output = exec_cmd(smart_bytes(cmd))
         if code:
             return []
 

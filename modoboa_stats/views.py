@@ -5,16 +5,14 @@
 import re
 import time
 
-from itertools import chain
-
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import (
     login_required, user_passes_test, permission_required
 )
 
-from modoboa.admin.models import Domain, DomainAlias
-from modoboa.lib.exceptions import BadRequest, PermDeniedException, NotFound
+from modoboa.admin.models import Domain
+from modoboa.lib.exceptions import BadRequest, NotFound
 from modoboa.lib.web_utils import (
     render_to_json_response
 )
@@ -51,31 +49,6 @@ def index(request):
         "deflocation": deflocation,
         "graph_sets": graph_sets
     })
-
-
-def check_domain_access(user, pattern):
-    """Check if an administrator can access a domain.
-
-    If a non super administrator asks for the global view, we give him
-    a view on the first domain he manage instead.
-
-    :return: a domain name (str) or None.
-    """
-    if pattern in [None, "global"]:
-        if not user.is_superuser:
-            domains = Domain.objects.get_for_admin(user)
-            if not domains.exists():
-                return None
-            return domains.first().name
-        return "global"
-
-    results = list(chain(Domain.objects.filter(name__startswith=pattern),
-                         DomainAlias.objects.filter(name__startswith=pattern)))
-    if len(results) != 1:
-        return None
-    if not user.can_access(results[0]):
-        raise PermDeniedException
-    return results[0].name
 
 
 @login_required
