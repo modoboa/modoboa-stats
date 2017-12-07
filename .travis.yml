@@ -5,30 +5,35 @@ addons:
     packages:
       - librrd-dev
       - rrdtool
-
 python:
-  - "2.7"
-  - "3.4"
-  - "3.6"
-
+  - '2.7'
+  - '3.4'
+  - '3.6'
 services:
   - postgres
-
 before_install:
   - pip install -q codecov psycopg2 factory-boy testfixtures
   - pip install -e git+https://github.com/modoboa/modoboa#egg=modoboa
-
 install:
   - pip install -r requirements.txt
   - python setup.py -q develop
-
 before_script:
   - psql -c 'create database modoboa_test;' -U postgres
-
 script:
   - cd test_project
   - coverage run --source ../modoboa_stats manage.py test modoboa_stats
-
 after_success:
   - codecov
-
+before_deploy:
+  - cd ../modoboa_stats
+  - django-admin compilemessages
+  - cd ..
+deploy:
+  provider: pypi
+  user: tonio
+  password:
+    secure: WHShe/aXEoTkx3J+nL0P28/BA+LZfZvj6bdNwZCVlAOPegl/h4JQx3gymmX3uygHS2LRlKy7YRt3BTVlSn7/T2R/rD/jbOkHhl27cCPbhO/cS2BWWorYzJOVjqyHOEbD1VXaAQxE4UJ2/EDw1wqbvgkPaRZX+VQiyqx1nGH044I=
+  skip_cleanup: true
+  on:
+    tags: true
+    python: '3.6'
