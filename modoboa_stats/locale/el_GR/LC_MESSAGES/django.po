@@ -1,0 +1,164 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Giannis Kapetanakis <bilias@edu.physics.uoc.gr>, 2016
+# Kostas Moumouris <moumouriskostas@gmail.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Modoboa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-09 10:02+0200\n"
+"PO-Revision-Date: 2017-10-12 07:37+0000\n"
+"Last-Translator: Kostas Moumouris <moumouriskostas@gmail.com>\n"
+"Language-Team: Greek (Greece) (http://www.transifex.com/tonio/modoboa/language/el_GR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el_GR\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: forms.py:15
+msgid "General"
+msgstr "Γενικά"
+
+#: forms.py:18
+msgid "Path to the log file"
+msgstr "Διαδρομή προς το αρχείο καταγραφής"
+
+#: forms.py:20
+msgid "Path to log file used to collect statistics"
+msgstr "Διαδρομή προς το αρχείο καταγραφής για την συλλογή στατιστικών"
+
+#: forms.py:25
+msgid "Directory to store RRD files"
+msgstr "Κατάλογος αρχείων για την αποθήκευση των αρχείων RRD"
+
+#: forms.py:28
+msgid "Path to directory where RRD files are stored"
+msgstr "Διαδρομή προς τον κατάλογο αρχείων για την αποθήκευση αρχείων RRD"
+
+#: forms.py:33
+msgid "Show greylisted messages"
+msgstr "Εμφάνιση μηνυμάτων greylisted"
+
+#: forms.py:36
+msgid "Differentiate between hard and soft rejects (greylisting)"
+msgstr "Διαφοροποίηση μεταξύ σκληρών (hard) και μαλακών (soft) απορρίψεων (greylisting)"
+
+#: graphics.py:93
+msgid "Failed to locate rrdtool binary."
+msgstr "Αδυναμία εύρεσης του εκτελέσουμε rrdtool."
+
+#: graphics.py:173
+msgid "Average traffic (msgs/min)"
+msgstr "Μέσος όρος κίνησης (μηνύματα/λεπτό)"
+
+#: graphics.py:176
+msgid "sent messages"
+msgstr "απεσταλμένα μηνύματα"
+
+#: graphics.py:177
+msgid "received messages"
+msgstr "ληφθέντα μηνήματα"
+
+#: graphics.py:178
+msgid "bounced messages"
+msgstr "Μηνύματα bounced "
+
+#: graphics.py:179
+msgid "rejected messages"
+msgstr "απορριφθέντα μηνύματα"
+
+#: graphics.py:180
+msgid "virus messages"
+msgstr "Μηνύματα με ιούς \n "
+
+#: graphics.py:181
+msgid "spam messages"
+msgstr "Διαφημιστικά μηνύματα"
+
+#: graphics.py:188
+msgid "greylisted messages"
+msgstr "Μηνύματα που είναι greylisted\n "
+
+#: graphics.py:199
+msgid "Average normal traffic size (bytes/min)"
+msgstr "Μέσος όρος φυσιολογικού traffic (bytes/min) "
+
+#: graphics.py:202
+msgid "received size"
+msgstr "Μέγεθος λαμβανόμενου"
+
+#: graphics.py:204
+msgid "sent size"
+msgstr "μέγεθος αποστολής"
+
+#: graphics.py:212
+msgid "Mail traffic"
+msgstr "Κίνηση Mail"
+
+#: graphics.py:257
+msgid "Average account creation (account/hour)"
+msgstr "Μέσος όρος δημιουργίας λογαριασμών (λογαριασμοί/ώρα)"
+
+#: graphics.py:260
+msgid "New accounts"
+msgstr "Νέοι λογαριασμοί"
+
+#: graphics.py:267
+msgid "Accounts"
+msgstr "Λογαριασμοί"
+
+#: handlers.py:21
+msgid "Statistics"
+msgstr "Στατιστικά"
+
+#: modo_extension.py:25
+msgid "Graphical statistics about emails traffic using RRDtool"
+msgstr "Γραφικά στατιστικά της κίνησης email με RRDtool"
+
+#: modo_extension.py:34 templates/modoboa_stats/index.html:4
+msgid "Graphical statistics"
+msgstr "Γραφικά στατιστικά"
+
+#: templates/modoboa_stats/index.html:44
+msgid "Search a domain"
+msgstr "Αναζήτηση ενός domain"
+
+#: templates/modoboa_stats/index.html:77
+msgid "Apply"
+msgstr "Εφαρμογή"
+
+#: views.py:35
+msgid "No statistics available"
+msgstr "Δεν υπάρχουν διαθέσιμα στατιστικά"
+
+#: views.py:42
+msgid "Day"
+msgstr "Ημέρα"
+
+#: views.py:43
+msgid "Week"
+msgstr "Εβδομάδα"
+
+#: views.py:44
+msgid "Month"
+msgstr "Μήνας"
+
+#: views.py:45
+msgid "Year"
+msgstr "Έτος"
+
+#: views.py:46
+msgid "Custom"
+msgstr "Προσαρμοσμένο"
+
+#: views.py:90
+msgid "Unknown graphic set"
+msgstr "Άγνωστο σετ γραφικών"
+
+#: views.py:100
+msgid "Bad custom period"
+msgstr "Λάθος προσαρμοσμένη περίοδος"

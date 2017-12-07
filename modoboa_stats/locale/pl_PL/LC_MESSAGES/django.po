@@ -3,163 +3,162 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Carlos L <carlos.latorre.sanchez@openmailbox.org>, 2017
-# Evilham <github@evilham.com>, 2017
-# Pedro Gracia <lasarux@neuroomante.com>, 2016
+# sin88 <sin@sin.waw.pl>, 2016
+# Tomasz Proć <tomasz.proc@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Modoboa\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-09 10:02+0200\n"
-"PO-Revision-Date: 2017-11-23 16:41+0000\n"
-"Last-Translator: Evilham <github@evilham.com>\n"
-"Language-Team: Spanish (http://www.transifex.com/tonio/modoboa/language/es/)\n"
+"PO-Revision-Date: 2017-12-01 16:06+0000\n"
+"Last-Translator: Tomasz Proć <tomasz.proc@gmail.com>\n"
+"Language-Team: Polish (Poland) (http://www.transifex.com/tonio/modoboa/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #: forms.py:15
 msgid "General"
-msgstr "General"
+msgstr "Ogólne"
 
 #: forms.py:18
 msgid "Path to the log file"
-msgstr "Ruta del fichero de log"
+msgstr "Ścieżka do pliku z logiem"
 
 #: forms.py:20
 msgid "Path to log file used to collect statistics"
-msgstr "Ruta al fichero de log usado para recolectar estadísticas"
+msgstr "Sćieżka do pliku z logiem dla colect "
 
 #: forms.py:25
 msgid "Directory to store RRD files"
-msgstr "Directorio para guardar los ficheros RRD"
+msgstr "Katalog do przechowywania plików RRD"
 
 #: forms.py:28
 msgid "Path to directory where RRD files are stored"
-msgstr "Ruta al directorio dónde están almacenados los ficheros RRD"
+msgstr "Katalog gdzie przechowywane są pliki RRD"
 
 #: forms.py:33
 msgid "Show greylisted messages"
-msgstr ""
+msgstr "Pokaż greylistowane wiadomości"
 
 #: forms.py:36
 msgid "Differentiate between hard and soft rejects (greylisting)"
-msgstr ""
+msgstr "Rozróżniaj twarde i miękkie odrzuty (greylisting)"
 
 #: graphics.py:93
 msgid "Failed to locate rrdtool binary."
-msgstr "Fallo al localizar el binario rrdtool"
+msgstr "Nie znaleziono binarki rrdtool."
 
 #: graphics.py:173
 msgid "Average traffic (msgs/min)"
-msgstr "Media del tráfico (msgs/min)"
+msgstr "Średni ruch (wiadomości/minutę)"
 
 #: graphics.py:176
 msgid "sent messages"
-msgstr "mensajes enviados"
+msgstr "Wysłane wiadomości"
 
 #: graphics.py:177
 msgid "received messages"
-msgstr "mensajes recibidos"
+msgstr "Odebrane wiadomości"
 
 #: graphics.py:178
 msgid "bounced messages"
-msgstr "mensajes rebotados"
+msgstr "Odbite wiadomości"
 
 #: graphics.py:179
 msgid "rejected messages"
-msgstr "mensajes bloqueados"
+msgstr "Odrzucone wiadomości"
 
 #: graphics.py:180
 msgid "virus messages"
-msgstr "mensajes con virus"
+msgstr "wiadomości zawirusowane"
 
 #: graphics.py:181
 msgid "spam messages"
-msgstr "Mensajes Basura"
+msgstr "wiadomości spam"
 
 #: graphics.py:188
 msgid "greylisted messages"
-msgstr ""
+msgstr "wiadomości opóźnione (greylisting)"
 
 #: graphics.py:199
 msgid "Average normal traffic size (bytes/min)"
-msgstr "Media normal del tamaño del tráfico (bytes/min)"
+msgstr "Średnia normalna wielkość ruchu (bajtów/min)"
 
 #: graphics.py:202
 msgid "received size"
-msgstr "tamaño recibido"
+msgstr "Ilość odebranych danych"
 
 #: graphics.py:204
 msgid "sent size"
-msgstr "tamaño enviado"
+msgstr "Ilość wysłanych danych"
 
 #: graphics.py:212
 msgid "Mail traffic"
-msgstr "Tráfico de correo"
+msgstr "Ruch e-mail"
 
 #: graphics.py:257
 msgid "Average account creation (account/hour)"
-msgstr "Creación promedio de cuentas (cuentas/hora)"
+msgstr "Średnia ilość tworzonych kont (konto/godzina)"
 
 #: graphics.py:260
 msgid "New accounts"
-msgstr "Cuentas nuevos"
+msgstr "Nowe konta"
 
 #: graphics.py:267
 msgid "Accounts"
-msgstr "Cuentas"
+msgstr "Konta"
 
 #: handlers.py:21
 msgid "Statistics"
-msgstr "Estadísticas"
+msgstr "Statystyki"
 
 #: modo_extension.py:25
 msgid "Graphical statistics about emails traffic using RRDtool"
-msgstr "Estadísticas gráficas del tráfico de emails usando RRDtool"
+msgstr "Graficzne statystyki wiadomości z wykorzystaniem "
 
 #: modo_extension.py:34 templates/modoboa_stats/index.html:4
 msgid "Graphical statistics"
-msgstr "Estadísticas gráficas"
+msgstr "Graficzne statytyki"
 
 #: templates/modoboa_stats/index.html:44
 msgid "Search a domain"
-msgstr "Buscar un dominio"
+msgstr "Wyszukaj domenę"
 
 #: templates/modoboa_stats/index.html:77
 msgid "Apply"
-msgstr "Aplicar"
+msgstr "Zastosuj"
 
 #: views.py:35
 msgid "No statistics available"
-msgstr "No hay estadísticas disponibles"
+msgstr "Brak dostępnych statysty"
 
 #: views.py:42
 msgid "Day"
-msgstr "Día"
+msgstr "Dzień"
 
 #: views.py:43
 msgid "Week"
-msgstr "Semana"
+msgstr "Tydzień"
 
 #: views.py:44
 msgid "Month"
-msgstr "Mes"
+msgstr "Miesiąc"
 
 #: views.py:45
 msgid "Year"
-msgstr "Año"
+msgstr "Rok"
 
 #: views.py:46
 msgid "Custom"
-msgstr "A medida"
+msgstr "Własne"
 
 #: views.py:90
 msgid "Unknown graphic set"
-msgstr "Conjunto gráfico desconocido"
+msgstr "Unknown graphic set"
 
 #: views.py:100
 msgid "Bad custom period"
-msgstr "Período elegido erróneo"
+msgstr "Nieprawudłowy przedział czasowy"
