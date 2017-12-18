@@ -6,7 +6,7 @@ import shutil
 import tempfile
 
 from django.core.management import call_command
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import override_settings
 
 from modoboa.admin import factories as admin_factories
