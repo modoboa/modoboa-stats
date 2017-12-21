@@ -7,7 +7,7 @@ This module provides support to retrieve statistics from postfix log :
 sent, received, bounced, rejected
 
 """
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy
 
 from modoboa.core.extensions import ModoExtension, exts_pool

@@ -6,7 +6,7 @@ import shutil
 import tempfile
 
 from django.core.management import call_command
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import override_settings
 
 from modoboa.admin import factories as admin_factories
@@ -51,7 +51,7 @@ class ViewsTestCase(RunCommandsMixin, ModoTestCase):
     """Views test cases."""
 
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls):  # noqa
         super(ViewsTestCase, cls).setUpTestData()
         admin_factories.populate_database()
         cls.da = core_models.User.objects.get(username="admin@test.com")
@@ -140,7 +140,7 @@ class ManagementCommandsTestCase(RunCommandsMixin, ModoTestCase):
     """Management command test cases."""
 
     @classmethod
-    def setUpTestData(cls):
+    def setUpTestData(cls):  # noqa
         super(ManagementCommandsTestCase, cls).setUpTestData()
         admin_factories.populate_database()
 

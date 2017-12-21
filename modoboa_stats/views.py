@@ -62,7 +62,7 @@ def graphs(request):
     if gset not in graph_sets:
         raise NotFound(_("Unknown graphic set"))
     period = request.GET.get("period", "day")
-    tplvars = dict(graphs={}, period=period)
+    tplvars = {"graphs": {}, "period": period}
     fname = graph_sets[gset].get_file_name(request)
     if fname is None:
         raise BadRequest(_("Unknown domain"))
