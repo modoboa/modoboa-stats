@@ -20,6 +20,7 @@ Predefined events are:
 
 from __future__ import print_function
 
+import io
 import os
 import re
 import string
@@ -53,7 +54,7 @@ class LogParser(object):
         self.debug = options["debug"]
         self.verbose = options["verbose"]
         try:
-            self.f = open(self.logfile)
+            self.f = io.open(self.logfile, encoding="utf-8")
         except IOError as errno:
             self._dprint("%s" % errno)
             sys.exit(1)

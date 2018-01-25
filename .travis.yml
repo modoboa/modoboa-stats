@@ -10,32 +10,28 @@ env:
     - PYTHONWARNINGS="default,ignore::PendingDeprecationWarning,ignore::ResourceWarning"
   matrix:
     - DB="POSTGRESQL"
+    - DB="MYSQL"
 
 sudo: false
 
+cache: pip
+
 addons:
+  postgresql: "9.3"
+  mysql: "5.5"
   apt:
     packages:
       - librrd-dev
       - rrdtool
 
-cache: pip
-
-services:
-  - postgres
-
 before_install:
   - pip install codecov
-  - if [[ $DB = "POSTGRESQL" ]]; then pip install -q psycopg2; fi
-  - pip install -e git+https://github.com/modoboa/modoboa#egg=modoboa
+  - pip install -e git+https://github.com/modoboa/modoboa.git#egg=modoboa
 
 install:
-  - pip install -q -r requirements.txt
-  - pip install -q -r test-requirements.txt
-  - python setup.py -q develop
-
-before_script:
-  - if [[ $DB = "POSTGRESQL" ]]; then psql -c "CREATE DATABASE modoboa_test;" -U postgres; fi
+  - pip install -r requirements.txt
+  - pip install -r test-requirements.txt
+  - python setup.py develop
 
 script:
   - cd test_project
@@ -55,6 +51,8 @@ deploy:
   password:
     secure: WHShe/aXEoTkx3J+nL0P28/BA+LZfZvj6bdNwZCVlAOPegl/h4JQx3gymmX3uygHS2LRlKy7YRt3BTVlSn7/T2R/rD/jbOkHhl27cCPbhO/cS2BWWorYzJOVjqyHOEbD1VXaAQxE4UJ2/EDw1wqbvgkPaRZX+VQiyqx1nGH044I=
   skip_cleanup: true
+  distributions: "sdist bdist_wheel"
   on:
     tags: true
-    python: '3.6'
+    python: "3.6"
+    condition: $DB = POSTGRESQL

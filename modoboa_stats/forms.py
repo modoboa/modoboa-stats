@@ -2,12 +2,11 @@
 
 import rrdtool
 
+from pkg_resources import parse_version
+
 from django.conf import settings
 from django.utils.translation import ugettext_lazy
 from django import forms
-
-from versionfield.constants import DEFAULT_NUMBER_BITS
-from versionfield.version import Version
 
 from modoboa.lib import form_utils
 from modoboa.parameters import forms as param_forms
@@ -45,8 +44,8 @@ class ParametersForm(param_forms.AdminParametersForm):
     def __init__(self, *args, **kwargs):
         """Check RRDtool version."""
         super(ParametersForm, self).__init__(*args, **kwargs)
-        rrd_version = Version(rrdtool.lib_version(), DEFAULT_NUMBER_BITS)
-        required_version = Version("1.6.0", DEFAULT_NUMBER_BITS)
+        rrd_version = parse_version(rrdtool.lib_version())
+        required_version = parse_version("1.6.0")
         test_mode = getattr(settings, "RRDTOOL_TEST_MODE", False)
         if rrd_version < required_version and not test_mode:
             del self.fields["greylist"]
