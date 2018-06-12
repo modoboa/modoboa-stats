@@ -539,10 +539,10 @@ class LogParser(object):
         try:
             parser = getattr(self, "_parse_{}".format(prog))
             if not parser(log, host, pid, subprog):
-                self._dprint("[parser] ignoring {} log: {}".format(prog, log))
+                self._dprint("[parser] ignoring %r log: %r" % (prog, log))
         except AttributeError:
             self._dprint(
-                "[parser] no log handler for \"{}\": {}".format(prog, log))
+                "[parser] no log handler for \"%r\": %r".format(prog, log))
 
     def process(self):
         """Process the log file.
