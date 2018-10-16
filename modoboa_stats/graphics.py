@@ -31,7 +31,7 @@ class Curve(object):
         """
         self.dsname = dsname
         self.color = color
-        self.legend = legend.encode("utf-8")
+        self.legend = legend
         self.cfunc = cfunc
 
     def to_rrd_command_args(self, rrdfile):
@@ -47,7 +47,7 @@ class Curve(object):
             'DEF:%s=%s:%s:%s' %
             (self.dsname, rrdfile, self.dsname, self.cfunc),
             'CDEF:%(ds)spm=%(ds)s,UN,0,%(ds)s,IF,60,*' % {"ds": self.dsname},
-            'XPORT:%spm:"%s"' % (self.dsname, self.legend.decode("utf-8"))
+            'XPORT:%spm:"%s"' % (self.dsname, self.legend)
         ]
 
 
@@ -103,7 +103,7 @@ class Graphic(object):
         cmdargs = []
         for curve in self._curves:
             result += [{
-                "name": smart_text(curve.legend),
+                "name": str(curve.legend),
                 "color": curve.color, "data": []
             }]
             cmdargs += curve.to_rrd_command_args(rrdfile)
