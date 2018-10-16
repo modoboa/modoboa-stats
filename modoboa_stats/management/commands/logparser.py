@@ -23,7 +23,6 @@ from __future__ import print_function
 import io
 import os
 import re
-import string
 import sys
 import time
 
@@ -474,7 +473,7 @@ class LogParser(object):
         if m is not None:
             self.workdict[queue_id] = {
                 "from": self.reverse_srs(m.group(1)),
-                "size": string.atoi(m.group(2))
+                "size": int(m.group(2))
             }
             return True
 
