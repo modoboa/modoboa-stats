@@ -53,7 +53,7 @@ class LogParser(object):
         self.debug = options["debug"]
         self.verbose = options["verbose"]
         try:
-            self.f = io.open(self.logfile, encoding="utf-8")
+            self.f = io.open(self.logfile, encoding="latin1")
         except IOError as errno:
             self._dprint("%s" % errno)
             sys.exit(1)
