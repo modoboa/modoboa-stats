@@ -1,7 +1,5 @@
 """Classes to define graphics."""
 
-from __future__ import unicode_literals
-
 import inspect
 from itertools import chain
 import os
@@ -19,7 +17,7 @@ from modoboa.lib.sysutils import exec_cmd
 from modoboa.parameters import tools as param_tools
 
 
-class Curve(object):
+class Curve:
 
     """Graphic curve.
 
@@ -51,7 +49,7 @@ class Curve(object):
         ]
 
 
-class Graphic(object):
+class Graphic:
     """Graphic."""
 
     def __init__(self):
@@ -193,7 +191,7 @@ class AverageTraffic(Graphic):
                 "reject", "greylist", "bounced", "recv", "sent", "virus",
                 "spam"
             ]
-        super(AverageTraffic, self).__init__()
+        super().__init__()
 
 
 class AverageTrafficSize(Graphic):
@@ -217,7 +215,7 @@ class MailTraffic(GraphicSet):
 
     def __init__(self, greylist=False):
         instances = [AverageTraffic(greylist), AverageTrafficSize()]
-        super(MailTraffic, self).__init__(instances)
+        super().__init__(instances)
 
     def _check_domain_access(self, user, pattern):
         """Check if an administrator can access a domain.

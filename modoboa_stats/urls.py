@@ -1,11 +1,13 @@
 """Stats urls."""
 
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
+app_name = "modoboa_stats"
+
 urlpatterns = [
-    url(r"^$", views.index, name="fullindex"),
-    url(r"^graphs/$", views.graphs, name="graph_list"),
-    url(r"^domains/$", views.get_domain_list, name="domain_list"),
+    path("", views.index, name="fullindex"),
+    path("graphs/", views.graphs, name="graph_list"),
+    path("domains/", views.get_domain_list, name="domain_list"),
 ]

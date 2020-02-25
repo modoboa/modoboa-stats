@@ -18,8 +18,6 @@ Predefined events are:
 
 """
 
-from __future__ import print_function
-
 import io
 import os
 import re
@@ -45,7 +43,7 @@ variables = ["sent", "recv", "bounced", "reject", "spam", "virus",
              "size_sent", "size_recv"]
 
 
-class LogParser(object):
+class LogParser:
 
     def __init__(self, options, workdir, year=None, greylist=False):
         """Constructor."""
