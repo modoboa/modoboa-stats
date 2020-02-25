@@ -22,7 +22,7 @@ from .lib import date_to_timestamp
 
 
 @login_required
-@permission_required("admin.view_mailboxes")
+@permission_required("admin.view_mailbox")
 def index(request):
     """
     FIXME: how to select a default graph set ?
